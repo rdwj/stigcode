@@ -215,6 +215,10 @@ def export_ckl(
         "UNCLASSIFIED", "--classification",
         help="Classification marking (e.g. UNCLASSIFIED, CUI).",
     ),
+    update_ckl_file: Optional[Path] = typer.Option(
+        None, "--update", "-u",
+        help="Path to an existing CKL to update incrementally (preserves assessor notes).",
+    ),
 ) -> None:
     """Generate a STIG Viewer checklist (.ckl) from SARIF scan results."""
     from stigcode.output.ckl import generate_ckl, write_ckl, AssetInfo
@@ -225,7 +229,38 @@ def export_ckl(
 
     asset = AssetInfo(host_name=host_name, host_ip=host_ip)
 
-    if output is not None:
+    if update_ckl_file is not None:
+        if not update_ckl_file.exists():
+            typer.echo(f"Error: existing CKL not found: {update_ckl_file}", err=True)
+            raise typer.Exit(code=2)
+        if output is None:
+            typer.echo(
+                "Error: --update requires --output to specify the destination path.",
+                err=True,
+            )
+            raise typer.Exit(code=2)
+
+        from stigcode.output.ckl_update import update_ckl as _update_ckl
+
+        result = _update_ckl(update_ckl_file, report, benchmark, output, asset, classification)
+
+        typer.echo(f"CKL updated: {output}", err=True)
+        typer.echo(
+            f"  {result.updated_count} updated, "
+            f"{result.preserved_count} preserved, "
+            f"{len(result.conflicts)} conflicts "
+            f"(of {result.total_findings} total findings)",
+            err=True,
+        )
+        if result.conflicts:
+            typer.echo("Conflicts requiring manual review:", err=True)
+            for c in result.conflicts:
+                typer.echo(
+                    f"  {c.stig_id}: was {c.existing_status}, "
+                    f"new scan says {c.new_status} — {c.reason}",
+                    err=True,
+                )
+    elif output is not None:
         write_ckl(report, benchmark, output, asset, classification)
         typer.echo(f"CKL written to {output}", err=True)
     else:
@@ -343,7 +378,37 @@ def lookup_cwe(
     cwe_id: str = typer.Option(..., "--cwe", help="CWE ID to look up (e.g. '89' or 'CWE-89')."),
 ) -> None:
     """Look up STIG findings mapped to a CWE ID."""
-    _not_implemented(1)
+    from stigcode.data import get_mapping_database
+
+    # Accept "89" or "CWE-89"
+    raw = cwe_id.upper().lstrip("CWE-").lstrip("0") or "0"
+    raw = cwe_id.replace("CWE-", "").replace("cwe-", "").strip()
+    try:
+        numeric_id = int(raw)
+    except ValueError:
+        typer.echo(f"Error: '{cwe_id}' is not a valid CWE ID.", err=True)
+        raise typer.Exit(code=2)
+
+    try:
+        db = get_mapping_database()
+    except FileNotFoundError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2)
+
+    matches = db.lookup_by_cwe(numeric_id)
+    if not matches:
+        typer.echo(f"No STIG mappings found for CWE-{numeric_id}.")
+        return
+
+    typer.echo(f"CWE-{numeric_id} maps to {len(matches)} STIG finding(s):\n")
+    for m in sorted(matches, key=lambda x: x.stig_id):
+        typer.echo(f"  {m.stig_id}  ({m.check_id})")
+        typer.echo(f"    Severity:   (see XCCDF for CAT)")
+        typer.echo(f"    Confidence: {m.confidence}")
+        typer.echo(f"    NIST:       {m.nist_control}")
+        if m.notes:
+            typer.echo(f"    Notes:      {m.notes}")
+        typer.echo("")
 
 
 @lookup_app.command(name="stig")
@@ -351,12 +416,149 @@ def lookup_stig(
     stig_id: str = typer.Option(..., "--stig", help="STIG Vuln ID to look up (e.g. 'V-222387')."),
 ) -> None:
     """Look up CWE mappings for a STIG finding."""
-    _not_implemented(1)
+    from stigcode.data import get_mapping_database
+
+    # Accept "V-222607" or "222607"
+    normalized = stig_id if stig_id.startswith("V-") else f"V-{stig_id}"
+
+    try:
+        db = get_mapping_database()
+    except FileNotFoundError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2)
+
+    matches = db.lookup_by_stig(normalized)
+    if not matches:
+        typer.echo(f"No CWE mappings found for {normalized}.")
+        return
+
+    typer.echo(f"{normalized} maps to {len(matches)} CWE(s):\n")
+    for m in sorted(matches, key=lambda x: x.cwe_id):
+        typer.echo(f"  CWE-{m.cwe_id}")
+        typer.echo(f"    Check ID:   {m.check_id}")
+        typer.echo(f"    Confidence: {m.confidence}")
+        typer.echo(f"    NIST:       {m.nist_control}")
+        if m.cci_refs:
+            typer.echo(f"    CCI refs:   {', '.join(m.cci_refs)}")
+        if m.notes:
+            typer.echo(f"    Notes:      {m.notes}")
+        typer.echo("")
 
 
 # ---------------------------------------------------------------------------
 # stig sub-commands
 # ---------------------------------------------------------------------------
+
+@stig_app.command(name="mappings")
+def stig_mappings(
+    output: Optional[Path] = typer.Option(
+        None, "--output", "-o",
+        help="Write full cross-reference matrix to this file.",
+    ),
+    xccdf_file: Optional[Path] = typer.Option(
+        None, "--xccdf", "-x",
+        help="Path to DISA XCCDF XML for full finding metadata.",
+    ),
+    fmt: str = typer.Option(
+        "md", "--format", "-f",
+        help="Output format for --output: 'md' or 'csv'.",
+    ),
+) -> None:
+    """Show mapping database stats; optionally write the cross-reference matrix."""
+    import yaml
+
+    from stigcode.data import get_mapping_database, get_cci_mappings
+
+    if fmt not in ("md", "csv"):
+        typer.echo(f"Error: --format must be 'md' or 'csv', got {fmt!r}", err=True)
+        raise typer.Exit(code=2)
+
+    try:
+        db = get_mapping_database()
+    except FileNotFoundError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2)
+
+    total = len(db.mappings)
+    unique_cwes = len(db.all_cwe_ids())
+    unique_stigs = len(db.all_stig_ids())
+
+    by_confidence: dict[str, int] = {}
+    for m in db.mappings:
+        by_confidence[m.confidence] = by_confidence.get(m.confidence, 0) + 1
+
+    typer.echo(f"Mapping database: {db.stig_name} {db.stig_version}  (v{db.version})")
+    typer.echo(f"  Total mappings:  {total}")
+    typer.echo(f"  Unique CWEs:     {unique_cwes}")
+    typer.echo(f"  Unique STIGs:    {unique_stigs}")
+    typer.echo("")
+    typer.echo("  By confidence:")
+    for level in ("direct", "inferred", "partial"):
+        count = by_confidence.get(level, 0)
+        typer.echo(f"    {level:10s}: {count}")
+
+    if output is None:
+        return
+
+    # Build full cross-reference matrix
+    from stigcode.ingest.xccdf import parse_xccdf, StigBenchmark, StigFinding
+    from stigcode.output.xref import build_xref_matrix, write_xref
+
+    if xccdf_file is not None:
+        if not xccdf_file.exists():
+            typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
+            raise typer.Exit(code=2)
+        benchmark = parse_xccdf(xccdf_file)
+    else:
+        # Synthetic benchmark from mapping db + classifications
+        cls_path = _DEFAULT_CLASSIFICATIONS
+        if not cls_path.exists():
+            typer.echo(f"Error: classifications file not found: {cls_path}", err=True)
+            raise typer.Exit(code=2)
+        raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
+        classifications: dict = raw_cls.get("classifications", {})
+
+        stig_ids = sorted(db.all_stig_ids())
+        synthetic_findings: list[StigFinding] = []
+        for sid in stig_ids:
+            cls_data = classifications.get(sid, {})
+            title = cls_data.get("title", sid) if isinstance(cls_data, dict) else sid
+            synthetic_findings.append(StigFinding(
+                vuln_id=sid,
+                rule_id=f"{sid}_rule",
+                check_id="",
+                title=title,
+                description="",
+                severity="medium",
+                category=2,
+                cci_refs=[],
+                fix_text="",
+                check_content="",
+            ))
+        benchmark = StigBenchmark(
+            benchmark_id="synthetic",
+            title=f"{db.stig_name} {db.stig_version}",
+            version="",
+            release="",
+            date="",
+            findings=synthetic_findings,
+            profiles={},
+        )
+
+    cls_path = _DEFAULT_CLASSIFICATIONS
+    raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
+    classifications = raw_cls.get("classifications", {})
+
+    try:
+        cci_mappings = get_cci_mappings()
+    except FileNotFoundError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2)
+
+    entries = build_xref_matrix(benchmark, db, cci_mappings, classifications)
+    write_xref(entries, output, fmt=fmt, benchmark_title=benchmark.title)
+    typer.echo(f"\nCross-reference matrix ({len(entries)} entries) written to {output}", err=True)
+
 
 @stig_app.command(name="import-xccdf")
 def stig_import_xccdf(
