@@ -1,0 +1,73 @@
+version: "1.0.0"
+stig_name: "Application Security and Development"
+stig_version: "V6R3"
+mappings:
+  # SQL Injection — direct, one CWE to one STIG
+  - cwe_id: 89
+    stig_id: V-222607
+    check_id: APSC-DV-002540
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-002754]
+    notes: "SQL injection maps directly to input validation finding"
+
+  # XSS — one CWE to two STIGs (one-to-many)
+  - cwe_id: 79
+    stig_id: V-222609
+    check_id: APSC-DV-002560
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-002754]
+    notes: "Reflected XSS — output encoding requirement"
+
+  - cwe_id: 79
+    stig_id: V-222610
+    check_id: APSC-DV-002570
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-002754, CCI-001310]
+    notes: "Stored XSS — broader content security policy requirement"
+
+  # Path traversal — inferred confidence
+  - cwe_id: 22
+    stig_id: V-222387
+    check_id: APSC-DV-000160
+    confidence: inferred
+    nist_control: AC-3
+    cci_refs: [CCI-000213]
+    notes: "Path traversal inferred from access control STIG"
+
+  # Hardcoded credentials — partial confidence
+  - cwe_id: 798
+    stig_id: V-222427
+    check_id: APSC-DV-001740
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-000196]
+    notes: "Hardcoded creds partially covered by credential management finding"
+
+  # Weak crypto — two CWEs to same STIG (many-to-one)
+  - cwe_id: 326
+    stig_id: V-222596
+    check_id: APSC-DV-002290
+    confidence: direct
+    nist_control: SC-28
+    cci_refs: [CCI-002475]
+    notes: "Inadequate encryption strength"
+
+  - cwe_id: 327
+    stig_id: V-222596
+    check_id: APSC-DV-002290
+    confidence: inferred
+    nist_control: SC-28
+    cci_refs: [CCI-002475]
+    notes: "Broken/risky crypto maps to same encryption strength STIG"
+
+  # Missing authentication — no cci_refs, no notes (minimal record)
+  - cwe_id: 306
+    stig_id: V-222400
+    check_id: APSC-DV-001460
+    confidence: inferred
+    nist_control: IA-2
+    cci_refs: []
+    notes: ""

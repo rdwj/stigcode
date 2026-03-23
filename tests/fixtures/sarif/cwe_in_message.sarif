@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "TestScanner-MessageOnly",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "buffer-overflow",
+              "shortDescription": { "text": "Buffer overflow risk" }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "buffer-overflow",
+          "level": "error",
+          "message": { "text": "Does not check for buffer overflows (CWE-120, CWE-20)." },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/parser.c" },
+                "region": { "startLine": 203 }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

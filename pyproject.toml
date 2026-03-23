@@ -9,6 +9,11 @@ description = "SARIF-to-compliance bridge. Transforms SAST scan results into DIS
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
+dependencies = [
+    "typer[all]>=0.12.0",
+    "pyyaml>=6.0",
+    "defusedxml>=0.7.0",
+]
 authors = [
     {name = "rdwj"}
 ]
@@ -35,5 +40,14 @@ Issues = "https://github.com/rdwj/stigcode/issues"
 [project.scripts]
 stigcode = "stigcode.cli:main"
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Scanner-A",
+          "version": "2.0.0",
+          "rules": [
+            {
+              "id": "sqli-001",
+              "shortDescription": { "text": "SQL Injection" },
+              "properties": { "tags": ["external/cwe/cwe-89"] }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "sqli-001",
+          "level": "error",
+          "message": { "text": "SQL injection in query builder" },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/db.py" },
+                "region": { "startLine": 55 }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "Scanner-B",
+          "version": "3.1.0",
+          "rules": [
+            {
+              "id": "hardcoded-secret",
+              "shortDescription": { "text": "Hardcoded Secret" }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "hardcoded-secret",
+          "level": "warning",
+          "message": { "text": "Hardcoded API key detected (CWE-798)" },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/config.py" },
+                "region": { "startLine": 12 }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

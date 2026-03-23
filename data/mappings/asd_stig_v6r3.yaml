@@ -1,0 +1,1152 @@
+# CWE to STIG mapping database for Application Security and Development STIG V6R3
+# Source: DISA ASD STIG V6R3 (XCCDF), CWE/SANS Top 25, OWASP Top 10
+# Covers: 80 SAST-assessable findings from finding_classifications.yaml
+# Generated: 2026-03-23
+#
+# Confidence levels:
+#   direct   - STIG finding unambiguously describes a specific CWE
+#   inferred - STIG finding describes a broader category encompassing multiple CWEs
+#   partial  - SAST can detect part of the finding, but full assessment needs config review
+
+version: "1.0.0"
+stig_name: "Application Security and Development"
+stig_version: "V6R3"
+mappings:
+
+  # ============================================================================
+  # SESSION MANAGEMENT
+  # ============================================================================
+
+  # V-222388: Clear temporary storage and cookies when session terminates
+  - cwe_id: 613
+    stig_id: V-222388
+    check_id: APSC-DV-000060
+    confidence: direct
+    nist_control: AC-12
+    cci_refs: [CCI-002361]
+    notes: "Improper session expiration; failing to clear cookies/storage on session end"
+  - cwe_id: 922
+    stig_id: V-222388
+    check_id: APSC-DV-000060
+    confidence: inferred
+    nist_control: AC-12
+    cci_refs: [CCI-002361]
+    notes: "Insecure storage of sensitive information in cookies or HTML5 local storage"
+
+  # ============================================================================
+  # ENCRYPTION / CRYPTOGRAPHY — REMOTE ACCESS
+  # ============================================================================
+
+  # V-222396: DoD-approved encryption for remote access confidentiality
+  - cwe_id: 319
+    stig_id: V-222396
+    check_id: APSC-DV-000160
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Cleartext transmission of sensitive data over remote access sessions"
+  - cwe_id: 327
+    stig_id: V-222396
+    check_id: APSC-DV-000160
+    confidence: inferred
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Use of broken or risky cryptographic algorithm for remote access encryption"
+
+  # V-222397: Cryptographic mechanisms for remote access integrity
+  - cwe_id: 319
+    stig_id: V-222397
+    check_id: APSC-DV-000170
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-001453]
+    notes: "Cleartext transmission without integrity protection on remote sessions"
+  - cwe_id: 327
+    stig_id: V-222397
+    check_id: APSC-DV-000170
+    confidence: inferred
+    nist_control: AC-17
+    cci_refs: [CCI-001453]
+    notes: "Use of weak crypto algorithms undermines integrity of remote access"
+
+  # ============================================================================
+  # SAML / WS-SECURITY ASSERTIONS
+  # ============================================================================
+
+  # V-222400: Verify validity periods on WS-Security/SAML messages
+  - cwe_id: 613
+    stig_id: V-222400
+    check_id: APSC-DV-000200
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Missing validation of SAML/WS-Security timestamp expiration enables replay attacks"
+  - cwe_id: 294
+    stig_id: V-222400
+    check_id: APSC-DV-000200
+    confidence: inferred
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Authentication bypass by capture-replay when timestamps are not verified"
+
+  # V-222401: Unique assertion ID references for each SAML assertion
+  - cwe_id: 330
+    stig_id: V-222401
+    check_id: APSC-DV-000210
+    confidence: inferred
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Non-unique SAML assertion IDs may indicate insufficient randomness"
+  - cwe_id: 287
+    stig_id: V-222401
+    check_id: APSC-DV-000210
+    confidence: inferred
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Duplicate SAML assertion IDs can lead to improper authentication"
+
+  # V-222402: Encrypted assertions when passed through intermediary
+  - cwe_id: 311
+    stig_id: V-222402
+    check_id: APSC-DV-000220
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Missing encryption of SAML assertion data passed through intermediaries"
+
+  # V-222403: NotOnOrAfter in SubjectConfirmation element
+  - cwe_id: 613
+    stig_id: V-222403
+    check_id: APSC-DV-000230
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Missing time bounds on SAML SubjectConfirmation enables reuse of expired assertions"
+
+  # V-222404: NotBefore/NotOnOrAfter or OneTimeUse in Conditions element
+  - cwe_id: 613
+    stig_id: V-222404
+    check_id: APSC-DV-000240
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Missing time bounds on SAML Conditions element allows unbounded assertion validity"
+
+  # V-222406: Encrypt messages when SessionIndex is tied to privacy data
+  - cwe_id: 311
+    stig_id: V-222406
+    check_id: APSC-DV-000260
+    confidence: direct
+    nist_control: AC-17
+    cci_refs: [CCI-000068]
+    notes: "Missing encryption of SAML SessionIndex tied to privacy data"
+
+  # ============================================================================
+  # ACCESS CONTROL / AUTHORIZATION
+  # ============================================================================
+
+  # V-222429: Prevent non-privileged users from executing privileged functions
+  - cwe_id: 862
+    stig_id: V-222429
+    check_id: APSC-DV-000500
+    confidence: direct
+    nist_control: AC-6
+    cci_refs: [CCI-002235]
+    notes: "Missing authorization checks allow non-privileged users to execute privileged functions"
+  - cwe_id: 284
+    stig_id: V-222429
+    check_id: APSC-DV-000500
+    confidence: inferred
+    nist_control: AC-6
+    cci_refs: [CCI-002235]
+    notes: "Improper access control enabling privilege escalation"
+
+  # ============================================================================
+  # AUDIT / LOGGING
+  # ============================================================================
+
+  # V-222438: Non-repudiation via digital signatures
+  - cwe_id: 345
+    stig_id: V-222438
+    check_id: APSC-DV-000590
+    confidence: inferred
+    nist_control: AU-10
+    cci_refs: [CCI-000166]
+    notes: "Insufficient verification of data authenticity undermines non-repudiation"
+
+  # V-222441: Audit record generation for session ID creation
+  - cwe_id: 778
+    stig_id: V-222441
+    check_id: APSC-DV-000620
+    confidence: direct
+    nist_control: AU-12
+    cci_refs: [CCI-000169]
+    notes: "Insufficient logging of session ID creation events"
+
+  # V-222444: Must not write sensitive data into logs
+  - cwe_id: 532
+    stig_id: V-222444
+    check_id: APSC-DV-000650
+    confidence: direct
+    nist_control: AU-12
+    cci_refs: [CCI-000169]
+    notes: "Insertion of sensitive information (passwords, session IDs, PII) into log files"
+  - cwe_id: 209
+    stig_id: V-222444
+    check_id: APSC-DV-000650
+    confidence: inferred
+    nist_control: AU-12
+    cci_refs: [CCI-000169]
+    notes: "Information exposure through error messages logged with sensitive data"
+
+  # ============================================================================
+  # AUDIT INTEGRITY
+  # ============================================================================
+
+  # V-222507: Cryptographic mechanisms to protect audit integrity
+  - cwe_id: 354
+    stig_id: V-222507
+    check_id: APSC-DV-001350
+    confidence: inferred
+    nist_control: AU-9
+    cci_refs: [CCI-001350]
+    notes: "Improper validation of integrity check value on audit records"
+  - cwe_id: 327
+    stig_id: V-222507
+    check_id: APSC-DV-001350
+    confidence: inferred
+    nist_control: AU-9
+    cci_refs: [CCI-001350]
+    notes: "Use of weak crypto for audit integrity allows tampering"
+
+  # V-222508: Audit tools must be cryptographically hashed
+  - cwe_id: 354
+    stig_id: V-222508
+    check_id: APSC-DV-001360
+    confidence: direct
+    nist_control: AU-9
+    cci_refs: [CCI-001496]
+    notes: "Missing integrity verification via cryptographic hash on audit tools"
+
+  # V-222509: Validate audit tool integrity via hash changes
+  - cwe_id: 354
+    stig_id: V-222509
+    check_id: APSC-DV-001370
+    confidence: direct
+    nist_control: AU-9
+    cci_refs: [CCI-001496]
+    notes: "Failure to validate integrity check values on audit tools"
+
+  # ============================================================================
+  # SOFTWARE INTEGRITY / CONFIGURATION MANAGEMENT
+  # ============================================================================
+
+  # V-222513: Prevent installation of unsigned patches/components
+  - cwe_id: 494
+    stig_id: V-222513
+    check_id: APSC-DV-001430
+    confidence: direct
+    nist_control: CM-5
+    cci_refs: [CCI-003992, CCI-001749]
+    notes: "Download of code without integrity check allows installation of tampered components"
+  - cwe_id: 295
+    stig_id: V-222513
+    check_id: APSC-DV-001430
+    confidence: inferred
+    nist_control: CM-5
+    cci_refs: [CCI-003992, CCI-001749]
+    notes: "Improper certificate validation when verifying patch signatures"
+
+  # ============================================================================
+  # AUTHENTICATION — MULTIFACTOR
+  # ============================================================================
+
+  # V-222523: MFA for network access to privileged accounts
+  - cwe_id: 308
+    stig_id: V-222523
+    check_id: APSC-DV-001550
+    confidence: direct
+    nist_control: IA-2
+    cci_refs: [CCI-000765]
+    notes: "Use of single-factor authentication for privileged network access"
+  - cwe_id: 306
+    stig_id: V-222523
+    check_id: APSC-DV-001550
+    confidence: inferred
+    nist_control: IA-2
+    cci_refs: [CCI-000765]
+    notes: "Missing authentication for critical function if MFA not enforced"
+
+  # V-222526: MFA for network access to non-privileged accounts
+  - cwe_id: 308
+    stig_id: V-222526
+    check_id: APSC-DV-001580
+    confidence: direct
+    nist_control: IA-2
+    cci_refs: [CCI-000766]
+    notes: "Use of single-factor authentication for non-privileged network access"
+
+  # V-222527: MFA for local access to privileged accounts
+  - cwe_id: 308
+    stig_id: V-222527
+    check_id: APSC-DV-001590
+    confidence: direct
+    nist_control: IA-2
+    cci_refs: [CCI-000765, CCI-000767]
+    notes: "Use of single-factor authentication for privileged local access"
+
+  # V-222528: MFA for local access to nonprivileged accounts
+  - cwe_id: 308
+    stig_id: V-222528
+    check_id: APSC-DV-001600
+    confidence: direct
+    nist_control: IA-2
+    cci_refs: [CCI-000766, CCI-000768]
+    notes: "Use of single-factor authentication for nonprivileged local access"
+
+  # V-222530: Replay-resistant auth for privileged network access
+  - cwe_id: 294
+    stig_id: V-222530
+    check_id: APSC-DV-001620
+    confidence: direct
+    nist_control: IA-2
+    cci_refs: [CCI-001941]
+    notes: "Authentication bypass by capture-replay on privileged accounts"
+
+  # V-222531: Replay-resistant auth for nonprivileged network access
+  - cwe_id: 294
+    stig_id: V-222531
+    check_id: APSC-DV-001630
+    confidence: direct
+    nist_control: IA-2
+    cci_refs: [CCI-001941, CCI-001942]
+    notes: "Authentication bypass by capture-replay on nonprivileged accounts"
+
+  # V-222534: Mutual SSL/TLS for SOA with non-releasable data
+  - cwe_id: 295
+    stig_id: V-222534
+    check_id: APSC-DV-001660
+    confidence: direct
+    nist_control: IA-3
+    cci_refs: [CCI-001967]
+    notes: "Improper certificate validation; missing mutual TLS for endpoint authentication"
+  - cwe_id: 319
+    stig_id: V-222534
+    check_id: APSC-DV-001660
+    confidence: inferred
+    nist_control: IA-3
+    cci_refs: [CCI-001967]
+    notes: "Cleartext transmission when mutual SSL/TLS is not implemented"
+
+  # V-222535: Disable device identifiers after 35 days inactivity
+  - cwe_id: 613
+    stig_id: V-222535
+    check_id: APSC-DV-001670
+    confidence: partial
+    nist_control: IA-4
+    cci_refs: [CCI-003627, CCI-000795]
+    notes: "SAST can detect missing inactivity timeout logic; specific 35-day threshold is configuration"
+
+  # ============================================================================
+  # PASSWORD MANAGEMENT
+  # ============================================================================
+
+  # V-222536: Minimum 15-character password length
+  - cwe_id: 521
+    stig_id: V-222536
+    check_id: APSC-DV-001680
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-000205]
+    notes: "SAST can detect password length validation code; specific 15-char minimum is policy config"
+
+  # V-222537: Password complexity — uppercase
+  - cwe_id: 521
+    stig_id: V-222537
+    check_id: APSC-DV-001690
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-000192]
+    notes: "SAST can detect missing uppercase complexity check in password validation"
+
+  # V-222538: Password complexity — lowercase
+  - cwe_id: 521
+    stig_id: V-222538
+    check_id: APSC-DV-001700
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-000193]
+    notes: "SAST can detect missing lowercase complexity check in password validation"
+
+  # V-222539: Password complexity — numeric
+  - cwe_id: 521
+    stig_id: V-222539
+    check_id: APSC-DV-001710
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-000194]
+    notes: "SAST can detect missing numeric complexity check in password validation"
+
+  # V-222540: Password complexity — special character
+  - cwe_id: 521
+    stig_id: V-222540
+    check_id: APSC-DV-001720
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-001619]
+    notes: "SAST can detect missing special character complexity check in password validation"
+
+  # V-222542: Store only cryptographic representations of passwords
+  - cwe_id: 256
+    stig_id: V-222542
+    check_id: APSC-DV-001740
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-004062, CCI-000196]
+    notes: "Cleartext storage of passwords instead of one-way hashes"
+  - cwe_id: 916
+    stig_id: V-222542
+    check_id: APSC-DV-001740
+    confidence: inferred
+    nist_control: IA-5
+    cci_refs: [CCI-004062, CCI-000196]
+    notes: "Use of password hash with insufficient computational effort (e.g., unsalted or weak hash)"
+
+  # V-222543: Transmit only cryptographically-protected passwords
+  - cwe_id: 319
+    stig_id: V-222543
+    check_id: APSC-DV-001750
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-000197]
+    notes: "Cleartext transmission of passwords"
+  - cwe_id: 523
+    stig_id: V-222543
+    check_id: APSC-DV-001750
+    confidence: inferred
+    nist_control: IA-5
+    cci_refs: [CCI-000197]
+    notes: "Unprotected transport of credentials over the network"
+
+  # V-222544: Enforce 24-hour minimum password lifetime
+  - cwe_id: 521
+    stig_id: V-222544
+    check_id: APSC-DV-001760
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-000198]
+    notes: "SAST can detect missing password lifetime enforcement; specific 24h minimum is policy"
+
+  # V-222545: Enforce 60-day maximum password lifetime
+  - cwe_id: 521
+    stig_id: V-222545
+    check_id: APSC-DV-001770
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004066, CCI-000199]
+    notes: "SAST can detect missing password expiration logic; specific 60-day max is policy"
+
+  # V-222546: Prohibit password reuse for minimum 5 generations
+  - cwe_id: 521
+    stig_id: V-222546
+    check_id: APSC-DV-001780
+    confidence: partial
+    nist_control: IA-5
+    cci_refs: [CCI-004061]
+    notes: "SAST can detect missing password history enforcement; specific 5-generation min is policy"
+
+  # V-222547: Temporary password with immediate change requirement
+  - cwe_id: 521
+    stig_id: V-222547
+    check_id: APSC-DV-001790
+    confidence: partial
+    nist_control: CM-6
+    cci_refs: [CCI-000366]
+    notes: "SAST can detect missing force-change logic for temporary passwords"
+
+  # V-222548: Password changeable only by admin or associated user
+  - cwe_id: 620
+    stig_id: V-222548
+    check_id: APSC-DV-001795
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-000184]
+    notes: "Unverified password change allows one user to change another's password"
+  - cwe_id: 862
+    stig_id: V-222548
+    check_id: APSC-DV-001795
+    confidence: inferred
+    nist_control: IA-5
+    cci_refs: [CCI-000184]
+    notes: "Missing authorization check on password change function"
+
+  # ============================================================================
+  # PKI / CERTIFICATE MANAGEMENT
+  # ============================================================================
+
+  # V-222550: Validate certificates by constructing certification path
+  - cwe_id: 295
+    stig_id: V-222550
+    check_id: APSC-DV-001810
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-000185]
+    notes: "Improper certificate validation; missing certification path construction to trust anchor"
+
+  # V-222551: Enforce authorized access to PKI private key
+  - cwe_id: 522
+    stig_id: V-222551
+    check_id: APSC-DV-001820
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-000186]
+    notes: "Insufficiently protected credentials; private key accessible without authorization"
+  - cwe_id: 798
+    stig_id: V-222551
+    check_id: APSC-DV-001820
+    confidence: inferred
+    nist_control: IA-5
+    cci_refs: [CCI-000186]
+    notes: "Hard-coded private keys in source code"
+
+  # V-222552: Map authenticated identity to user/group for PKI auth
+  - cwe_id: 287
+    stig_id: V-222552
+    check_id: APSC-DV-001830
+    confidence: inferred
+    nist_control: IA-5
+    cci_refs: [CCI-000187]
+    notes: "Improper authentication when certificate identity is not mapped to application accounts"
+
+  # V-222553: Local cache of revocation data for PKI path validation
+  - cwe_id: 299
+    stig_id: V-222553
+    check_id: APSC-DV-001840
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-004068, CCI-001991]
+    notes: "Improper check for certificate revocation; missing CRL cache for offline validation"
+
+  # ============================================================================
+  # CRYPTOGRAPHIC MODULE AUTHENTICATION
+  # ============================================================================
+
+  # V-222555: Authentication to cryptographic module per federal requirements
+  - cwe_id: 327
+    stig_id: V-222555
+    check_id: APSC-DV-001860
+    confidence: direct
+    nist_control: IA-7
+    cci_refs: [CCI-000803]
+    notes: "Use of non-FIPS-validated cryptographic module for authentication"
+
+  # ============================================================================
+  # FEDERATED IDENTITY (FICAM)
+  # ============================================================================
+
+  # V-222559: Accept FICAM-approved third-party credentials
+  - cwe_id: 287
+    stig_id: V-222559
+    check_id: APSC-DV-001900
+    confidence: inferred
+    nist_control: IA-8
+    cci_refs: [CCI-004083, CCI-002011]
+    notes: "Improper authentication when not accepting FICAM-approved credentials"
+
+  # V-222560: Conform to FICAM-issued profiles
+  - cwe_id: 287
+    stig_id: V-222560
+    check_id: APSC-DV-001910
+    confidence: inferred
+    nist_control: IA-8
+    cci_refs: [CCI-004085, CCI-002014]
+    notes: "Improper authentication due to non-conformance with FICAM authentication profiles"
+
+  # ============================================================================
+  # NON-LOCAL MAINTENANCE CRYPTOGRAPHY
+  # ============================================================================
+
+  # V-222562: Crypto for non-local maintenance integrity
+  - cwe_id: 319
+    stig_id: V-222562
+    check_id: APSC-DV-001940
+    confidence: direct
+    nist_control: MA-4
+    cci_refs: [CCI-002890]
+    notes: "Cleartext transmission of maintenance/diagnostic session data"
+  - cwe_id: 327
+    stig_id: V-222562
+    check_id: APSC-DV-001940
+    confidence: inferred
+    nist_control: MA-4
+    cci_refs: [CCI-002890]
+    notes: "Use of weak crypto algorithms for maintenance session integrity"
+
+  # V-222563: Crypto for non-local maintenance confidentiality
+  - cwe_id: 319
+    stig_id: V-222563
+    check_id: APSC-DV-001950
+    confidence: direct
+    nist_control: MA-4
+    cci_refs: [CCI-003123]
+    notes: "Cleartext transmission of maintenance/diagnostic session data"
+  - cwe_id: 311
+    stig_id: V-222563
+    check_id: APSC-DV-001950
+    confidence: inferred
+    nist_control: MA-4
+    cci_refs: [CCI-003123]
+    notes: "Missing encryption of sensitive maintenance data"
+
+  # V-222565: Strong authenticators for non-local maintenance sessions
+  - cwe_id: 308
+    stig_id: V-222565
+    check_id: APSC-DV-001970
+    confidence: direct
+    nist_control: MA-4
+    cci_refs: [CCI-000877]
+    notes: "Use of single-factor authentication for maintenance sessions instead of MFA/PKI"
+
+  # ============================================================================
+  # RACE CONDITIONS
+  # ============================================================================
+
+  # V-222567: Not vulnerable to race conditions
+  - cwe_id: 362
+    stig_id: V-222567
+    check_id: APSC-DV-001995
+    confidence: direct
+    nist_control: CM-6
+    cci_refs: [CCI-000366, CCI-003178]
+    notes: "Race conditions including TOCTOU, thread-based, and switch-based races"
+  - cwe_id: 367
+    stig_id: V-222567
+    check_id: APSC-DV-001995
+    confidence: direct
+    nist_control: CM-6
+    cci_refs: [CCI-000366, CCI-003178]
+    notes: "Time-of-check time-of-use (TOCTOU) race condition"
+
+  # ============================================================================
+  # FIPS CRYPTOGRAPHY
+  # ============================================================================
+
+  # V-265634: NSA-approved crypto for classified information
+  - cwe_id: 327
+    stig_id: V-265634
+    check_id: APSC-DV-002010
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of non-NSA-approved cryptographic algorithms for classified data"
+  - cwe_id: 326
+    stig_id: V-265634
+    check_id: APSC-DV-002010
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Inadequate encryption strength; must use AES-256, P-384, SHA-384 for classified"
+
+  # V-222570: FIPS-validated crypto modules for signing
+  - cwe_id: 327
+    stig_id: V-222570
+    check_id: APSC-DV-002020
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of non-FIPS-validated cryptographic module for signing"
+  - cwe_id: 347
+    stig_id: V-222570
+    check_id: APSC-DV-002020
+    confidence: inferred
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Improper verification of cryptographic signature when using weak modules"
+
+  # V-222571: FIPS-validated crypto modules for hashing
+  - cwe_id: 327
+    stig_id: V-222571
+    check_id: APSC-DV-002030
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of non-FIPS-validated hash algorithms (e.g., MD5, SHA-1 where prohibited)"
+  - cwe_id: 328
+    stig_id: V-222571
+    check_id: APSC-DV-002030
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of weak hash algorithms that do not meet FIPS requirements"
+
+  # V-222572: FIPS-validated crypto for unclassified information
+  - cwe_id: 327
+    stig_id: V-222572
+    check_id: APSC-DV-002040
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of non-FIPS-validated cryptographic module for protecting unclassified data"
+
+  # V-222573: FIPS-approved random numbers in SAML SessionIndex
+  - cwe_id: 330
+    stig_id: V-222573
+    check_id: APSC-DV-002050
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of insufficiently random values for SAML SessionIndex generation"
+  - cwe_id: 338
+    stig_id: V-222573
+    check_id: APSC-DV-002050
+    confidence: direct
+    nist_control: SC-13
+    cci_refs: [CCI-002450]
+    notes: "Use of cryptographically weak PRNG for security-critical SessionIndex"
+
+  # ============================================================================
+  # SESSION COOKIES AND SESSION MANAGEMENT
+  # ============================================================================
+
+  # V-222575: HTTPOnly flag on session cookies
+  - cwe_id: 1004
+    stig_id: V-222575
+    check_id: APSC-DV-002210
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001184]
+    notes: "Sensitive cookie without HttpOnly flag exposes session to XSS theft"
+
+  # V-222576: Secure flag on session cookies
+  - cwe_id: 614
+    stig_id: V-222576
+    check_id: APSC-DV-002220
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001184]
+    notes: "Sensitive cookie in HTTPS session without Secure attribute"
+
+  # V-222577: Must not expose session IDs
+  - cwe_id: 200
+    stig_id: V-222577
+    check_id: APSC-DV-002230
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001184]
+    notes: "Exposure of session IDs in URLs, logs, or error messages"
+  - cwe_id: 598
+    stig_id: V-222577
+    check_id: APSC-DV-002230
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001184]
+    notes: "Use of GET request method with sensitive session query strings"
+
+  # V-222578: Destroy session ID on logoff or browser close
+  - cwe_id: 613
+    stig_id: V-222578
+    check_id: APSC-DV-002240
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001185]
+    notes: "Insufficient session expiration; session ID not destroyed on logoff"
+
+  # V-222579: System-generated session IDs protecting against session fixation
+  - cwe_id: 384
+    stig_id: V-222579
+    check_id: APSC-DV-002250
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001664]
+    notes: "Session fixation; not generating new session ID upon authentication"
+
+  # V-222583: FIPS 140-2/3 random number generator for session IDs
+  - cwe_id: 330
+    stig_id: V-222583
+    check_id: APSC-DV-002290
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001188]
+    notes: "Use of insufficiently random values for session ID generation"
+  - cwe_id: 338
+    stig_id: V-222583
+    check_id: APSC-DV-002290
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-001188]
+    notes: "Use of cryptographically weak PRNG for session identifiers"
+
+  # V-222584: Only DoD-approved CAs for protected session verification
+  - cwe_id: 295
+    stig_id: V-222584
+    check_id: APSC-DV-002300
+    confidence: direct
+    nist_control: SC-23
+    cci_refs: [CCI-002470]
+    notes: "Improper certificate validation; accepting non-DoD-approved CAs for session establishment"
+
+  # ============================================================================
+  # DATA AT REST PROTECTION
+  # ============================================================================
+
+  # V-222587: Protect confidentiality/integrity of stored information
+  - cwe_id: 311
+    stig_id: V-222587
+    check_id: APSC-DV-002330
+    confidence: direct
+    nist_control: SC-28
+    cci_refs: [CCI-001199]
+    notes: "Missing encryption of sensitive data at rest"
+  - cwe_id: 922
+    stig_id: V-222587
+    check_id: APSC-DV-002330
+    confidence: inferred
+    nist_control: SC-28
+    cci_refs: [CCI-001199]
+    notes: "Insecure storage of sensitive information without access controls"
+
+  # V-222588: Approved crypto to prevent unauthorized modification at rest
+  - cwe_id: 311
+    stig_id: V-222588
+    check_id: APSC-DV-002340
+    confidence: direct
+    nist_control: SC-28
+    cci_refs: [CCI-002475]
+    notes: "Missing encryption of sensitive data at rest"
+  - cwe_id: 327
+    stig_id: V-222588
+    check_id: APSC-DV-002340
+    confidence: inferred
+    nist_control: SC-28
+    cci_refs: [CCI-002475]
+    notes: "Use of weak crypto for data-at-rest protection"
+
+  # V-222589: Appropriate crypto for stored DoD information
+  - cwe_id: 311
+    stig_id: V-222589
+    check_id: APSC-DV-002350
+    confidence: direct
+    nist_control: SC-28
+    cci_refs: [CCI-002476]
+    notes: "Missing encryption of stored DoD information"
+  - cwe_id: 327
+    stig_id: V-222589
+    check_id: APSC-DV-002350
+    confidence: inferred
+    nist_control: SC-28
+    cci_refs: [CCI-002476]
+    notes: "Use of weak crypto algorithms for stored data protection"
+
+  # ============================================================================
+  # SHARED SYSTEM RESOURCES
+  # ============================================================================
+
+  # V-222592: Prevent unauthorized info transfer via shared resources
+  - cwe_id: 212
+    stig_id: V-222592
+    check_id: APSC-DV-002380
+    confidence: direct
+    nist_control: SC-4
+    cci_refs: [CCI-001090]
+    notes: "Improper removal of sensitive information before storage or transfer (residual data)"
+  - cwe_id: 226
+    stig_id: V-222592
+    check_id: APSC-DV-002380
+    confidence: direct
+    nist_control: SC-4
+    cci_refs: [CCI-001090]
+    notes: "Sensitive information in resource not removed before reuse"
+
+  # ============================================================================
+  # DENIAL OF SERVICE
+  # ============================================================================
+
+  # V-222594: Restrict ability to launch DoS attacks
+  - cwe_id: 400
+    stig_id: V-222594
+    check_id: APSC-DV-002400
+    confidence: direct
+    nist_control: SC-5
+    cci_refs: [CCI-001094]
+    notes: "Uncontrolled resource consumption enabling denial of service"
+  - cwe_id: 770
+    stig_id: V-222594
+    check_id: APSC-DV-002400
+    confidence: inferred
+    nist_control: SC-5
+    cci_refs: [CCI-001094]
+    notes: "Allocation of resources without limits or throttling"
+
+  # ============================================================================
+  # DATA IN TRANSIT PROTECTION
+  # ============================================================================
+
+  # V-222596: Protect confidentiality and integrity of transmitted information
+  - cwe_id: 319
+    stig_id: V-222596
+    check_id: APSC-DV-002440
+    confidence: direct
+    nist_control: SC-8
+    cci_refs: [CCI-002418]
+    notes: "Cleartext transmission of sensitive information"
+  - cwe_id: 311
+    stig_id: V-222596
+    check_id: APSC-DV-002440
+    confidence: inferred
+    nist_control: SC-8
+    cci_refs: [CCI-002418]
+    notes: "Missing encryption of sensitive data in transit"
+
+  # V-222597: Crypto mechanisms to prevent unauthorized disclosure during transmission
+  - cwe_id: 319
+    stig_id: V-222597
+    check_id: APSC-DV-002450
+    confidence: direct
+    nist_control: SC-8
+    cci_refs: [CCI-002421]
+    notes: "Cleartext transmission without integrity protection mechanisms"
+  - cwe_id: 327
+    stig_id: V-222597
+    check_id: APSC-DV-002450
+    confidence: inferred
+    nist_control: SC-8
+    cci_refs: [CCI-002421]
+    notes: "Use of weak crypto for transmission integrity"
+
+  # V-222598: Confidentiality/integrity during preparation for transmission
+  - cwe_id: 319
+    stig_id: V-222598
+    check_id: APSC-DV-002460
+    confidence: direct
+    nist_control: SC-8
+    cci_refs: [CCI-002420]
+    notes: "Cleartext handling of data during preparation for transmission"
+
+  # V-222599: Confidentiality/integrity during reception
+  - cwe_id: 319
+    stig_id: V-222599
+    check_id: APSC-DV-002470
+    confidence: direct
+    nist_control: SC-8
+    cci_refs: [CCI-002422]
+    notes: "Cleartext handling of data during reception"
+
+  # V-222601: Must not store sensitive info in hidden fields
+  - cwe_id: 472
+    stig_id: V-222601
+    check_id: APSC-DV-002485
+    confidence: direct
+    nist_control: SC-8
+    cci_refs: [CCI-002420]
+    notes: "External control of assumed-immutable web parameter via hidden fields"
+  - cwe_id: 311
+    stig_id: V-222601
+    check_id: APSC-DV-002485
+    confidence: inferred
+    nist_control: SC-8
+    cci_refs: [CCI-002420]
+    notes: "Sensitive information in hidden fields without encryption"
+
+  # ============================================================================
+  # INPUT VALIDATION — INJECTION ATTACKS
+  # ============================================================================
+
+  # V-222602: Protect from XSS
+  - cwe_id: 79
+    stig_id: V-222602
+    check_id: APSC-DV-002490
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Cross-site scripting via improper neutralization of input during web page generation"
+
+  # V-222603: Protect from CSRF
+  - cwe_id: 352
+    stig_id: V-222603
+    check_id: APSC-DV-002500
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Cross-site request forgery due to missing anti-CSRF tokens or validation"
+
+  # V-222604: Protect from command injection
+  - cwe_id: 78
+    stig_id: V-222604
+    check_id: APSC-DV-002510
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "OS command injection via improper neutralization of special elements in commands"
+  - cwe_id: 94
+    stig_id: V-222604
+    check_id: APSC-DV-002510
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Code injection via eval/exec; description lists vulnerable functions per language"
+
+  # V-222606: Validate all input
+  - cwe_id: 20
+    stig_id: V-222606
+    check_id: APSC-DV-002530
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Improper input validation; the overarching requirement for all input handling"
+  - cwe_id: 79
+    stig_id: V-222606
+    check_id: APSC-DV-002530
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "XSS as a consequence of missing input validation"
+  - cwe_id: 89
+    stig_id: V-222606
+    check_id: APSC-DV-002530
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "SQL injection as a consequence of missing input validation"
+  - cwe_id: 78
+    stig_id: V-222606
+    check_id: APSC-DV-002530
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Command injection as a consequence of missing input validation"
+
+  # V-222607: Not vulnerable to SQL Injection
+  - cwe_id: 89
+    stig_id: V-222607
+    check_id: APSC-DV-002540
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "SQL injection via improper neutralization of special elements in SQL commands"
+
+  # V-222608: Not vulnerable to XML-oriented attacks
+  - cwe_id: 611
+    stig_id: V-222608
+    check_id: APSC-DV-002550
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Improper restriction of XML external entity reference (XXE)"
+  - cwe_id: 776
+    stig_id: V-222608
+    check_id: APSC-DV-002550
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "Improper restriction of recursive entity references in DTDs (XML bomb/billion laughs)"
+  - cwe_id: 91
+    stig_id: V-222608
+    check_id: APSC-DV-002550
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-001310]
+    notes: "XML injection via improper neutralization of special elements in XML data"
+
+  # V-222609: Not subject to input handling vulnerabilities
+  - cwe_id: 20
+    stig_id: V-222609
+    check_id: APSC-DV-002560
+    confidence: direct
+    nist_control: SI-10
+    cci_refs: [CCI-002754]
+    notes: "Improper input validation covering boundary checks, data length, type validation"
+  - cwe_id: 22
+    stig_id: V-222609
+    check_id: APSC-DV-002560
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-002754]
+    notes: "Path traversal from improper input handling of file paths"
+  - cwe_id: 601
+    stig_id: V-222609
+    check_id: APSC-DV-002560
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-002754]
+    notes: "URL redirection to untrusted site (open redirect) from improper input validation"
+  - cwe_id: 117
+    stig_id: V-222609
+    check_id: APSC-DV-002560
+    confidence: inferred
+    nist_control: SI-10
+    cci_refs: [CCI-002754]
+    notes: "Log injection from improper output neutralization for logs"
+
+  # ============================================================================
+  # OVERFLOW ATTACKS
+  # ============================================================================
+
+  # V-222612: Not vulnerable to overflow attacks
+  - cwe_id: 120
+    stig_id: V-222612
+    check_id: APSC-DV-002590
+    confidence: direct
+    nist_control: SI-16
+    cci_refs: [CCI-002824]
+    notes: "Buffer copy without checking size of input (classic buffer overflow)"
+  - cwe_id: 190
+    stig_id: V-222612
+    check_id: APSC-DV-002590
+    confidence: direct
+    nist_control: SI-16
+    cci_refs: [CCI-002824]
+    notes: "Integer overflow or wraparound leading to buffer overflow or DoS"
+  - cwe_id: 787
+    stig_id: V-222612
+    check_id: APSC-DV-002590
+    confidence: direct
+    nist_control: SI-16
+    cci_refs: [CCI-002824]
+    notes: "Out-of-bounds write from stack/heap overflow"
+  - cwe_id: 134
+    stig_id: V-222612
+    check_id: APSC-DV-002590
+    confidence: inferred
+    nist_control: SI-16
+    cci_refs: [CCI-002824]
+    notes: "Use of externally-controlled format string leading to overflow"
+
+  # ============================================================================
+  # KEY EXCHANGE
+  # ============================================================================
+
+  # V-222641: Encryption for key exchange with endpoint authentication
+  - cwe_id: 322
+    stig_id: V-222641
+    check_id: APSC-DV-003100
+    confidence: direct
+    nist_control: IA-5
+    cci_refs: [CCI-000201]
+    notes: "Key exchange without entity authentication enables MITM interception of keys"
+  - cwe_id: 295
+    stig_id: V-222641
+    check_id: APSC-DV-003100
+    confidence: inferred
+    nist_control: IA-5
+    cci_refs: [CCI-000201]
+    notes: "Improper certificate validation during key exchange endpoint authentication"
+
+  # ============================================================================
+  # DEPLOYMENT INTEGRITY
+  # ============================================================================
+
+  # V-222645: Application files cryptographically hashed before deployment
+  - cwe_id: 354
+    stig_id: V-222645
+    check_id: APSC-DV-003140
+    confidence: direct
+    nist_control: SA-10
+    cci_refs: [CCI-000698]
+    notes: "Improper validation of integrity check value on application files before deployment"
+  - cwe_id: 494
+    stig_id: V-222645
+    check_id: APSC-DV-003140
+    confidence: inferred
+    nist_control: SA-10
+    cci_refs: [CCI-000698]
+    notes: "Download of code without integrity check before deploying to operational network"

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "TestScanner-Relationships",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "xss-reflected",
+              "shortDescription": { "text": "Reflected XSS" },
+              "relationships": [
+                {
+                  "target": {
+                    "id": "79",
+                    "guid": "00000000-0000-0000-0000-000000000079",
+                    "toolComponent": { "name": "CWE", "guid": "00000000-0000-0000-0000-000000000000" }
+                  },
+                  "kinds": ["superset"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "taxonomies": [
+        {
+          "name": "CWE",
+          "guid": "00000000-0000-0000-0000-000000000000",
+          "taxa": [
+            {
+              "id": "79",
+              "guid": "00000000-0000-0000-0000-000000000079",
+              "name": "ImproperNeutralizationOfInputDuringWebPageGeneration"
+            }
+          ]
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "xss-reflected",
+          "level": "warning",
+          "message": { "text": "Reflected cross-site scripting vulnerability" },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/views.py" },
+                "region": { "startLine": 88, "startColumn": 12 }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
