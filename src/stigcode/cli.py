@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+import yaml
 
 from stigcode.version import __version__
 
@@ -18,6 +19,11 @@ ISSUES_URL = f"{REPO_URL}/issues"
 _ISSUE_CKL = 5
 _ISSUE_REPORT = 6
 _ISSUE_COVERAGE = 7
+
+_DEFAULT_MAPPING = Path(__file__).parent.parent.parent / "data" / "mappings" / "asd_stig_v6r3.yaml"
+_DEFAULT_CLASSIFICATIONS = (
+    Path(__file__).parent.parent.parent / "data" / "mappings" / "finding_classifications.yaml"
+)
 
 app = typer.Typer(help=DESCRIPTION, no_args_is_help=True)
 export_app = typer.Typer(help="Generate compliance artifacts from imported findings.", no_args_is_help=True)
@@ -33,6 +39,101 @@ def _not_implemented(issue: int) -> None:
     """Print a standard 'not yet implemented' message and exit 2."""
     typer.echo(f"Not yet implemented. See: {ISSUES_URL}/{issue}", err=True)
     raise typer.Exit(code=2)
+
+
+# ---------------------------------------------------------------------------
+# Shared pipeline loader
+# ---------------------------------------------------------------------------
+
+def _load_pipeline(
+    sarif_file: str,
+    mapping_file: Optional[Path],
+    classifications_file: Optional[Path],
+    xccdf_file: Optional[Path],
+):
+    """Load all inputs and run status determination.
+
+    Handles stdin, default paths, and the synthetic-benchmark fallback.
+
+    Returns:
+        Tuple of (StatusReport, StigBenchmark, MappingDatabase, SarifResult)
+
+    Raises:
+        typer.Exit(code=2) on any error with a user-facing message printed to stderr.
+    """
+    from stigcode.ingest.sarif import parse_sarif
+    from stigcode.ingest.xccdf import parse_xccdf, StigBenchmark, StigFinding
+    from stigcode.mapping.engine import load_mapping_database
+    from stigcode.mapping.status import determine_status
+
+    # --- Load SARIF ---
+    if sarif_file == "-":
+        content = sys.stdin.read()
+        sarif_result = parse_sarif(content)
+    else:
+        path = Path(sarif_file)
+        if not path.exists():
+            typer.echo(f"Error: SARIF file not found: {path}", err=True)
+            raise typer.Exit(code=2)
+        sarif_result = parse_sarif(path)
+
+    if sarif_result.errors:
+        for err in sarif_result.errors:
+            typer.echo(f"Warning: {err}", err=True)
+
+    # --- Load mapping database ---
+    mapping_path = mapping_file or _DEFAULT_MAPPING
+    if not mapping_path.exists():
+        typer.echo(f"Error: mapping file not found: {mapping_path}", err=True)
+        typer.echo("Provide --mappings or ensure the bundled mapping data is installed.", err=True)
+        raise typer.Exit(code=2)
+    db = load_mapping_database(mapping_path)
+
+    # --- Load classifications ---
+    cls_path = classifications_file or _DEFAULT_CLASSIFICATIONS
+    if not cls_path.exists():
+        typer.echo(f"Error: classifications file not found: {cls_path}", err=True)
+        raise typer.Exit(code=2)
+    raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
+    classifications: dict = raw_cls.get("classifications", {})
+
+    # --- Load benchmark (real XCCDF or synthetic fallback) ---
+    if xccdf_file is not None:
+        if not xccdf_file.exists():
+            typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
+            raise typer.Exit(code=2)
+        benchmark = parse_xccdf(xccdf_file)
+    else:
+        stig_ids = sorted(db.all_stig_ids())
+        synthetic_findings: list[StigFinding] = [
+            StigFinding(
+                vuln_id=stig_id,
+                rule_id=f"{stig_id}_rule",
+                check_id="",
+                title=stig_id,
+                description="",
+                severity="medium",
+                category=2,
+                cci_refs=[],
+                fix_text="",
+                check_content="",
+            )
+            for stig_id in stig_ids
+        ]
+        benchmark = StigBenchmark(
+            benchmark_id="synthetic",
+            title="Synthetic benchmark from mapping database",
+            version="",
+            release="",
+            date="",
+            findings=synthetic_findings,
+            profiles={},
+        )
+
+    # --- Determine status ---
+    report = determine_status(sarif_result.findings, db, benchmark, classifications)
+
+    return report, benchmark, db, sarif_result
 
 
 # ---------------------------------------------------------------------------
@@ -116,82 +217,12 @@ def export_ckl(
     ),
 ) -> None:
     """Generate a STIG Viewer checklist (.ckl) from SARIF scan results."""
-    import yaml
-
-    from stigcode.ingest.sarif import parse_sarif
-    from stigcode.ingest.xccdf import parse_xccdf, StigBenchmark, StigFinding
-    from stigcode.mapping.engine import load_mapping_database
-    from stigcode.mapping.status import determine_status
     from stigcode.output.ckl import generate_ckl, write_ckl, AssetInfo
 
-    # --- Load SARIF ---
-    if sarif_file == "-":
-        content = sys.stdin.read()
-        sarif_result = parse_sarif(content)
-    else:
-        path = Path(sarif_file)
-        if not path.exists():
-            typer.echo(f"Error: SARIF file not found: {path}", err=True)
-            raise typer.Exit(code=2)
-        sarif_result = parse_sarif(path)
+    report, benchmark, db, _sarif_result = _load_pipeline(
+        sarif_file, mapping_file, classifications_file, xccdf_file
+    )
 
-    if sarif_result.errors:
-        for err in sarif_result.errors:
-            typer.echo(f"Warning: {err}", err=True)
-
-    # --- Load mapping database ---
-    _DEFAULT_MAPPING = Path(__file__).parent.parent.parent / "data" / "mappings" / "asd_stig_v6r3.yaml"
-    mapping_path = mapping_file or _DEFAULT_MAPPING
-    if not mapping_path.exists():
-        typer.echo(f"Error: mapping file not found: {mapping_path}", err=True)
-        raise typer.Exit(code=2)
-    db = load_mapping_database(mapping_path)
-
-    # --- Load classifications ---
-    _DEFAULT_CLASSIFICATIONS = Path(__file__).parent.parent.parent / "data" / "mappings" / "finding_classifications.yaml"
-    cls_path = classifications_file or _DEFAULT_CLASSIFICATIONS
-    if not cls_path.exists():
-        typer.echo(f"Error: classifications file not found: {cls_path}", err=True)
-        raise typer.Exit(code=2)
-    raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
-    classifications: dict = raw_cls.get("classifications", {})
-
-    # --- Load benchmark ---
-    if xccdf_file is not None:
-        if not xccdf_file.exists():
-            typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
-            raise typer.Exit(code=2)
-        benchmark = parse_xccdf(xccdf_file)
-    else:
-        stig_ids = sorted(db.all_stig_ids())
-        synthetic_findings: list[StigFinding] = []
-        for stig_id in stig_ids:
-            synthetic_findings.append(StigFinding(
-                vuln_id=stig_id,
-                rule_id=f"{stig_id}_rule",
-                check_id="",
-                title=stig_id,
-                description="",
-                severity="medium",
-                category=2,
-                cci_refs=[],
-                fix_text="",
-                check_content="",
-            ))
-        benchmark = StigBenchmark(
-            benchmark_id="synthetic",
-            title="Synthetic benchmark from mapping database",
-            version="",
-            release="",
-            date="",
-            findings=synthetic_findings,
-            profiles={},
-        )
-
-    # --- Determine status ---
-    report = determine_status(sarif_result.findings, db, benchmark, classifications)
-
-    # --- Generate CKL ---
     asset = AssetInfo(host_name=host_name, host_ip=host_ip)
 
     if output is not None:
@@ -202,15 +233,105 @@ def export_ckl(
 
 
 @export_app.command(name="report")
-def export_report() -> None:
-    """Generate an ATO evidence report from imported findings."""
-    _not_implemented(_ISSUE_REPORT)
+def export_report(
+    sarif_file: str = typer.Argument(..., help="Path to SARIF file, or '-' to read from stdin."),
+    output: Optional[Path] = typer.Option(
+        None, "--output", "-o",
+        help="Output Markdown file path. Prints to stdout if omitted.",
+    ),
+    xccdf_file: Optional[Path] = typer.Option(
+        None, "--xccdf", "-x",
+        help="Path to DISA XCCDF XML file for full benchmark metadata.",
+    ),
+    mapping_file: Optional[Path] = typer.Option(
+        None, "--mappings", "-m",
+        help="Path to CWE-to-STIG mapping YAML. Defaults to the bundled ASD STIG V6 mapping.",
+    ),
+    classifications_file: Optional[Path] = typer.Option(
+        None, "--classifications", "-c",
+        help="Path to finding classifications YAML.",
+    ),
+    fmt: str = typer.Option(
+        "md", "--format", "-f",
+        help="Output format. Only 'md' (Markdown) is supported.",
+    ),
+) -> None:
+    """Generate an ATO evidence summary report from SARIF scan results."""
+    if fmt != "md":
+        typer.echo(f"Error: unsupported format '{fmt}'. Only 'md' is supported.", err=True)
+        raise typer.Exit(code=2)
+
+    from stigcode.output.report import generate_report, write_report
+
+    report, benchmark, db, _sarif_result = _load_pipeline(
+        sarif_file, mapping_file, classifications_file, xccdf_file
+    )
+
+    if output is not None:
+        write_report(report, benchmark, db, output)
+        typer.echo(f"Report written to {output}", err=True)
+    else:
+        typer.echo(generate_report(report, benchmark, db))
 
 
 @export_app.command(name="coverage")
-def export_coverage() -> None:
+def export_coverage(
+    sarif_file: str = typer.Argument(..., help="Path to SARIF file, or '-' to read from stdin."),
+    output: Optional[Path] = typer.Option(
+        None, "--output", "-o",
+        help="Output file path. Prints to stdout if omitted.",
+    ),
+    xccdf_file: Optional[Path] = typer.Option(
+        None, "--xccdf", "-x",
+        help="Path to DISA XCCDF XML file for full benchmark metadata.",
+    ),
+    mapping_file: Optional[Path] = typer.Option(
+        None, "--mappings", "-m",
+        help="Path to CWE-to-STIG mapping YAML. Defaults to the bundled ASD STIG V6 mapping.",
+    ),
+    classifications_file: Optional[Path] = typer.Option(
+        None, "--classifications", "-c",
+        help="Path to finding classifications YAML.",
+    ),
+    fmt: str = typer.Option(
+        "md", "--format", "-f",
+        help="Output format: 'md' (Markdown) or 'csv'.",
+    ),
+) -> None:
     """Generate a NIST 800-53 coverage matrix from imported findings."""
-    _not_implemented(_ISSUE_COVERAGE)
+    if fmt not in ("md", "csv"):
+        typer.echo(f"Error: --format must be 'md' or 'csv', got {fmt!r}", err=True)
+        raise typer.Exit(code=2)
+
+    from stigcode.data import get_cci_mappings
+    from stigcode.output.coverage import (
+        build_coverage_matrix,
+        matrix_to_csv,
+        matrix_to_markdown,
+        write_coverage,
+    )
+
+    report, benchmark, _db, _sarif_result = _load_pipeline(
+        sarif_file, mapping_file, classifications_file, xccdf_file
+    )
+
+    try:
+        cci_mappings = get_cci_mappings()
+    except FileNotFoundError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2)
+
+    matrix = build_coverage_matrix(report, benchmark, cci_mappings)
+
+    if output is not None:
+        write_coverage(matrix, output, fmt=fmt)
+        typer.echo(f"Coverage matrix written to {output}", err=True)
+    else:
+        if fmt == "md":
+            typer.echo(matrix_to_markdown(matrix))
+        else:
+            typer.echo(matrix_to_csv(matrix))
+
 
 
 # ---------------------------------------------------------------------------
@@ -283,83 +404,12 @@ def assess(
     ),
 ) -> None:
     """Assess a SARIF scan against a STIG benchmark and print a status summary."""
-    import yaml
+    from stigcode.mapping.status import CklStatus
 
-    from stigcode.ingest.sarif import parse_sarif
-    from stigcode.ingest.xccdf import parse_xccdf, StigBenchmark, StigFinding
-    from stigcode.mapping.engine import load_mapping_database, MappingDatabase, StigMapping
-    from stigcode.mapping.status import determine_status, CklStatus
+    report, benchmark, _db, _sarif_result = _load_pipeline(
+        sarif_file, mapping_file, classifications_file, xccdf_file
+    )
 
-    # --- Load SARIF ---
-    if sarif_file == "-":
-        content = sys.stdin.read()
-        sarif_result = parse_sarif(content)
-    else:
-        path = Path(sarif_file)
-        if not path.exists():
-            typer.echo(f"Error: SARIF file not found: {path}", err=True)
-            raise typer.Exit(code=2)
-        sarif_result = parse_sarif(path)
-
-    if sarif_result.errors:
-        for err in sarif_result.errors:
-            typer.echo(f"Warning: {err}", err=True)
-
-    # --- Load mapping database ---
-    _DEFAULT_MAPPING = Path(__file__).parent.parent.parent / "data" / "mappings" / "asd_stig_v6r3.yaml"
-    mapping_path = mapping_file or _DEFAULT_MAPPING
-    if not mapping_path.exists():
-        typer.echo(f"Error: mapping file not found: {mapping_path}", err=True)
-        typer.echo("Provide --mappings or ensure the bundled mapping data is installed.", err=True)
-        raise typer.Exit(code=2)
-    db = load_mapping_database(mapping_path)
-
-    # --- Load classifications ---
-    _DEFAULT_CLASSIFICATIONS = Path(__file__).parent.parent.parent / "data" / "mappings" / "finding_classifications.yaml"
-    cls_path = classifications_file or _DEFAULT_CLASSIFICATIONS
-    if not cls_path.exists():
-        typer.echo(f"Error: classifications file not found: {cls_path}", err=True)
-        raise typer.Exit(code=2)
-    raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
-    classifications: dict = raw_cls.get("classifications", {})
-
-    # --- Load benchmark ---
-    if xccdf_file is not None:
-        if not xccdf_file.exists():
-            typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
-            raise typer.Exit(code=2)
-        benchmark = parse_xccdf(xccdf_file)
-    else:
-        # Build a synthetic benchmark from the findings the mapping DB knows about
-        stig_ids = sorted(db.all_stig_ids())
-        synthetic_findings: list[StigFinding] = []
-        for stig_id in stig_ids:
-            synthetic_findings.append(StigFinding(
-                vuln_id=stig_id,
-                rule_id=f"{stig_id}_rule",
-                check_id="",
-                title=stig_id,
-                description="",
-                severity="medium",
-                category=2,
-                cci_refs=[],
-                fix_text="",
-                check_content="",
-            ))
-        benchmark = StigBenchmark(
-            benchmark_id="synthetic",
-            title="Synthetic benchmark from mapping database",
-            version="",
-            release="",
-            date="",
-            findings=synthetic_findings,
-            profiles={},
-        )
-
-    # --- Determine status ---
-    report = determine_status(sarif_result.findings, db, benchmark, classifications)
-
-    # --- Print summary ---
     typer.echo(f"Scanner: {report.scan_summary['scanner_name'] or 'unknown'}")
     typer.echo(f"SARIF findings: {report.scan_summary['total_sarif_findings']}")
     typer.echo(f"STIG findings assessed: {report.scan_summary['total_stig_findings']}")
@@ -374,7 +424,6 @@ def assess(
         typer.echo("Open findings by category:")
         by_cat: dict[int, int] = {}
         open_dets = [d for d in report.determinations if d.status == CklStatus.OPEN]
-        # Map STIG IDs back to categories via the benchmark
         cat_by_stig = {f.vuln_id: f.category for f in benchmark.findings}
         for det in open_dets:
             cat = cat_by_stig.get(det.stig_id, 2)

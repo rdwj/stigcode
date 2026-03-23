@@ -35,22 +35,12 @@ class TestHelp:
         assert "SARIF-to-compliance bridge" in result.output
 
 
-class TestExportNotImplemented:
-    @pytest.mark.parametrize("subcommand", ["report", "coverage"])
-    def test_exits_with_code_2(self, subcommand):
+class TestExportRequiresSarif:
+    @pytest.mark.parametrize("subcommand", ["ckl", "report"])
+    def test_export_requires_sarif_argument(self, subcommand):
+        """Implemented export commands require a SARIF file argument."""
         result = runner.invoke(app, ["export", subcommand])
         assert result.exit_code == 2, f"export {subcommand}: {result.output}"
-
-    @pytest.mark.parametrize("subcommand", ["report", "coverage"])
-    def test_mentions_not_implemented(self, subcommand):
-        result = runner.invoke(app, ["export", subcommand])
-        combined = result.stdout + (result.stderr or "")
-        assert "Not yet implemented" in combined, f"export {subcommand}: {combined!r}"
-
-    def test_export_ckl_requires_sarif_argument(self):
-        """CKL export is now implemented but requires a SARIF file argument."""
-        result = runner.invoke(app, ["export", "ckl"])
-        assert result.exit_code == 2, result.output
 
 
 class TestStigImportXccdf:
