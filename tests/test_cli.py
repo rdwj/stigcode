@@ -89,3 +89,140 @@ class TestImportSarif:
         assert result.exit_code == 2
         combined = result.stdout + (result.stderr or "")
         assert "Not yet implemented" in combined
+
+
+class TestLookupCwe:
+    def test_known_cwe_exits_zero(self):
+        result = runner.invoke(app, ["lookup", "cwe", "--cwe", "89"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 for CWE-89, got {result.exit_code}.\n{result.output}"
+        )
+
+    def test_known_cwe_output_contains_stig_id(self):
+        """CWE-89 (SQL injection) should map to at least one STIG finding."""
+        result = runner.invoke(app, ["lookup", "cwe", "--cwe", "89"])
+        assert result.exit_code == 0, result.output
+        # The output should contain at least one V- prefixed ID
+        assert "V-" in result.output, (
+            f"Expected at least one V-ID in output for CWE-89:\n{result.output}"
+        )
+
+    def test_cwe_prefix_format_accepted(self):
+        """'CWE-89' and '89' should produce the same result."""
+        result_bare = runner.invoke(app, ["lookup", "cwe", "--cwe", "89"])
+        result_prefix = runner.invoke(app, ["lookup", "cwe", "--cwe", "CWE-89"])
+        assert result_bare.exit_code == 0
+        assert result_prefix.exit_code == 0
+        assert result_bare.output == result_prefix.output, (
+            "Output for '89' and 'CWE-89' should be identical"
+        )
+
+    def test_unknown_cwe_exits_zero_with_no_mappings_message(self):
+        result = runner.invoke(app, ["lookup", "cwe", "--cwe", "99999"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 for unknown CWE, got {result.exit_code}.\n{result.output}"
+        )
+        assert "No" in result.output or "no" in result.output, (
+            f"Expected 'no mappings' message for unknown CWE:\n{result.output}"
+        )
+
+    def test_invalid_cwe_format_exits_2(self):
+        result = runner.invoke(app, ["lookup", "cwe", "--cwe", "notanumber"])
+        assert result.exit_code == 2, (
+            f"Expected exit 2 for invalid CWE, got {result.exit_code}.\n{result.output}"
+        )
+
+
+class TestLookupStig:
+    def test_known_stig_exits_zero(self):
+        result = runner.invoke(app, ["lookup", "stig", "--stig", "V-222607"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 for V-222607, got {result.exit_code}.\n{result.output}"
+        )
+
+    def test_known_stig_output_contains_cwe89(self):
+        """V-222607 maps to CWE-89 (SQL injection) per the mapping database."""
+        result = runner.invoke(app, ["lookup", "stig", "--stig", "V-222607"])
+        assert result.exit_code == 0, result.output
+        assert "89" in result.output, (
+            f"Expected CWE-89 in output for V-222607:\n{result.output}"
+        )
+
+    def test_stig_id_without_prefix_accepted(self):
+        """'222607' should resolve to V-222607."""
+        result = runner.invoke(app, ["lookup", "stig", "--stig", "222607"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 for bare numeric STIG ID, got {result.exit_code}.\n{result.output}"
+        )
+        assert "89" in result.output
+
+    def test_unknown_stig_exits_zero_with_no_mappings_message(self):
+        result = runner.invoke(app, ["lookup", "stig", "--stig", "V-999999"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 for unknown STIG, got {result.exit_code}.\n{result.output}"
+        )
+        assert "No" in result.output or "no" in result.output, (
+            f"Expected 'no mappings' message for unknown STIG:\n{result.output}"
+        )
+
+
+class TestInfoMappings:
+    def test_exits_zero(self):
+        result = runner.invoke(app, ["stig", "mappings"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0, got {result.exit_code}.\n{result.output}"
+        )
+
+    def test_shows_total_mappings(self):
+        result = runner.invoke(app, ["stig", "mappings"])
+        assert "Total mappings" in result.output, (
+            f"Expected total mappings count in output:\n{result.output}"
+        )
+
+    def test_shows_unique_cwes(self):
+        result = runner.invoke(app, ["stig", "mappings"])
+        assert "Unique CWEs" in result.output, (
+            f"Expected unique CWE count in output:\n{result.output}"
+        )
+
+    def test_shows_unique_stigs(self):
+        result = runner.invoke(app, ["stig", "mappings"])
+        assert "Unique STIGs" in result.output, (
+            f"Expected unique STIG count in output:\n{result.output}"
+        )
+
+    def test_shows_confidence_breakdown(self):
+        result = runner.invoke(app, ["stig", "mappings"])
+        assert "direct" in result.output, (
+            f"Expected confidence breakdown in output:\n{result.output}"
+        )
+
+    def test_output_markdown_file(self, tmp_path):
+        out = tmp_path / "xref.md"
+        result = runner.invoke(app, ["stig", "mappings", "--output", str(out)])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 with --output, got {result.exit_code}.\n{result.output}"
+        )
+        assert out.exists(), "Expected output file to be created"
+        content = out.read_text()
+        assert "STIG Cross-Reference Matrix" in content, (
+            "Expected xref matrix header in output file"
+        )
+
+    def test_output_csv_file(self, tmp_path):
+        out = tmp_path / "xref.csv"
+        result = runner.invoke(app, [
+            "stig", "mappings", "--output", str(out), "--format", "csv",
+        ])
+        assert result.exit_code == 0, (
+            f"Expected exit 0 with --output --format csv, got {result.exit_code}.\n{result.output}"
+        )
+        assert out.exists()
+        content = out.read_text()
+        assert "STIG_ID" in content
+
+    def test_invalid_format_exits_2(self):
+        result = runner.invoke(app, ["stig", "mappings", "--format", "xlsx"])
+        assert result.exit_code == 2, (
+            f"Expected exit 2 for invalid format, got {result.exit_code}"
+        )
