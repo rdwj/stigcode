@@ -1,3 +1,31 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Build and Development Commands
+
+```bash
+# Setup (Python 3.10+)
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+
+# Run the CLI
+stigcode
+
+# Run tests
+pytest
+pytest tests/test_specific.py          # single file
+pytest -k "test_name"                  # by pattern
+
+# Lint / format (not yet configured — add ruff or similar when ready)
+```
+
+The package uses setuptools with `src/` layout. Entry point: `stigcode.cli:main` (defined in `pyproject.toml`). Version lives in `src/stigcode/version.py` and must be kept in sync with `pyproject.toml [project] version`.
+
+## Project Status
+
+Early scaffold — CLI prints a banner and exits. The `ingest/`, `mapping/`, `output/`, and `data/` subpackages described in the architecture below do not exist yet. The `data/` directory with YAML mappings also needs to be created.
+
 # Stigcode — Project Context
 
 Stigcode is a PyPI-distributed CLI tool that transforms SARIF scan results from any SAST scanner into compliance-native artifacts: DISA STIG Viewer checklists (.ckl), ATO evidence reports, NIST 800-53 coverage matrices, and (future) NIST OSCAL output.
