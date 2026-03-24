@@ -34,14 +34,18 @@ def report(
     ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
-        help="Output format. Only 'md' (Markdown) is supported.",
+        help="Output format: 'md' (Markdown) or 'pdf'.",
     ),
 ) -> None:
     """Generate an ATO evidence summary report from SARIF scan results."""
-    if fmt != "md":
+    if fmt not in ("md", "pdf"):
         typer.echo(
-            f"Error: unsupported format '{fmt}'. Only 'md' is supported.", err=True
+            f"Error: --format must be 'md' or 'pdf', got {fmt!r}", err=True
         )
+        raise typer.Exit(code=2)
+
+    if fmt == "pdf" and output is None:
+        typer.echo("Error: --output is required when --format pdf is used.", err=True)
         raise typer.Exit(code=2)
 
     from stigcode.output.report import generate_report, write_report
@@ -50,7 +54,12 @@ def report(
         sarif_file, mapping_file, classifications_file, xccdf_file
     )
 
-    if output is not None:
+    if fmt == "pdf":
+        from stigcode.output.pdf import markdown_to_pdf
+        md_content = generate_report(rpt, benchmark, db)
+        markdown_to_pdf(md_content, output, title="Security Assessment Evidence")  # type: ignore[arg-type]
+        typer.echo(f"Report written to {output}", err=True)
+    elif output is not None:
         write_report(rpt, benchmark, db, output)
         typer.echo(f"Report written to {output}", err=True)
     else:
@@ -80,14 +89,18 @@ def coverage(
     ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
-        help="Output format: 'md' (Markdown) or 'csv'.",
+        help="Output format: 'md' (Markdown), 'csv', or 'pdf'.",
     ),
 ) -> None:
     """Generate a NIST 800-53 coverage matrix from imported findings."""
-    if fmt not in ("md", "csv"):
+    if fmt not in ("md", "csv", "pdf"):
         typer.echo(
-            f"Error: --format must be 'md' or 'csv', got {fmt!r}", err=True
+            f"Error: --format must be 'md', 'csv', or 'pdf', got {fmt!r}", err=True
         )
+        raise typer.Exit(code=2)
+
+    if fmt == "pdf" and output is None:
+        typer.echo("Error: --output is required when --format pdf is used.", err=True)
         raise typer.Exit(code=2)
 
     from stigcode.data import get_cci_mappings
@@ -110,7 +123,12 @@ def coverage(
 
     matrix = build_coverage_matrix(rpt, benchmark, cci_mappings, mapping_db=db)
 
-    if output is not None:
+    if fmt == "pdf":
+        from stigcode.output.pdf import markdown_to_pdf
+        md_content = matrix_to_markdown(matrix)
+        markdown_to_pdf(md_content, output, title="NIST 800-53 Coverage Matrix")  # type: ignore[arg-type]
+        typer.echo(f"Coverage matrix written to {output}", err=True)
+    elif output is not None:
         write_coverage(matrix, output, fmt=fmt)
         typer.echo(f"Coverage matrix written to {output}", err=True)
     else:
@@ -143,14 +161,18 @@ def poam(
     ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
-        help="Output format: 'md' or 'csv'.",
+        help="Output format: 'md', 'csv', or 'pdf'.",
     ),
 ) -> None:
     """Generate POA&M candidates from open findings."""
-    if fmt not in ("md", "csv"):
+    if fmt not in ("md", "csv", "pdf"):
         typer.echo(
-            f"Error: --format must be 'md' or 'csv', got {fmt!r}", err=True
+            f"Error: --format must be 'md', 'csv', or 'pdf', got {fmt!r}", err=True
         )
+        raise typer.Exit(code=2)
+
+    if fmt == "pdf" and output is None:
+        typer.echo("Error: --output is required when --format pdf is used.", err=True)
         raise typer.Exit(code=2)
 
     from stigcode.data import get_cci_mappings
@@ -175,7 +197,12 @@ def poam(
         scanner_version=sarif_result.scanner_version,
     )
 
-    if output is not None:
+    if fmt == "pdf":
+        from stigcode.output.pdf import markdown_to_pdf
+        md_content = poam_to_markdown(poam_report)
+        markdown_to_pdf(md_content, output, title="POA&M Candidates")  # type: ignore[arg-type]
+        typer.echo(f"POA&M written to {output}", err=True)
+    elif output is not None:
         write_poam(poam_report, output, fmt=fmt)
         typer.echo(f"POA&M written to {output}", err=True)
     else:
