@@ -202,7 +202,12 @@ def test_every_mapping_has_check_id(mapping_db: MappingDatabase) -> None:
 
 
 def test_check_ids_follow_apsc_format(mapping_db: MappingDatabase) -> None:
-    """Check IDs should follow the APSC-DV-XXXXXX format."""
+    """Check IDs should follow the APSC-DV-XXXXXX format.
+
+    NOTE: This assertion is specific to the ASD (Application Security and
+    Development) STIG. Other STIGs use different check-ID prefixes and
+    formats, so this test should not be treated as a universal invariant.
+    """
     import re
 
     pattern = re.compile(r"^APSC-DV-\d{6}$")

@@ -180,6 +180,7 @@ def _section_executive_summary(
 def _section_sa11_evidence(
     report: StatusReport,
     benchmark: StigBenchmark,
+    mapping_db: MappingDatabase,
     scan_date: datetime,
     sa11_status: str,
 ) -> str:
@@ -189,6 +190,7 @@ def _section_sa11_evidence(
 
     total = report.scan_summary.get("total_stig_findings", len(report.determinations))
     naf = report.not_a_finding_count
+    stig_label = f"{mapping_db.stig_name} STIG"
 
     lines = [
         "## Control Evidence",
@@ -199,7 +201,7 @@ def _section_sa11_evidence(
         "",
         f"Automated SAST scanning was performed using {scanner_display} on "
         f"{scan_date.strftime('%Y-%m-%d')}. The scan covers {total} code-level security "
-        "controls from the Application Security and Development STIG.",
+        f"controls from the {stig_label}.",
         "",
         "| Metric | Value |",
         "|--------|-------|",
@@ -347,7 +349,8 @@ def _section_nist_control_mapping(
     return "\n".join(lines)
 
 
-def _section_scope_and_limitations() -> str:
+def _section_scope_and_limitations(mapping_db: MappingDatabase) -> str:
+    stig_label = f"{mapping_db.stig_name} STIG"
     return "\n".join([
         "## Assessment Scope and Limitations",
         "",
@@ -359,7 +362,7 @@ def _section_scope_and_limitations() -> str:
         "- Runtime and configuration controls (session timeouts, TLS settings)",
         "- Operational controls (incident response, backup procedures)",
         "",
-        "Of the findings in the Application Security and Development STIG, a subset "
+        f"Of the findings in the {stig_label}, a subset "
         "are assessable by SAST (covered by this scan); the remainder require "
         "manual or procedural assessment and are not covered.",
     ])
@@ -445,7 +448,7 @@ def generate_report(
         "",
         _section_executive_summary(report, benchmark, scan_date, sa11_status),
         "",
-        _section_sa11_evidence(report, benchmark, scan_date, sa11_status),
+        _section_sa11_evidence(report, benchmark, mapping_db, scan_date, sa11_status),
         "",
         _section_findings_by_severity(report, finding_index),
         "",
@@ -453,7 +456,7 @@ def generate_report(
         "",
         _section_nist_control_mapping(report, benchmark, mapping_db, cci_mappings),
         "",
-        _section_scope_and_limitations(),
+        _section_scope_and_limitations(mapping_db),
         "",
         _section_methodology(mapping_db),
         "",

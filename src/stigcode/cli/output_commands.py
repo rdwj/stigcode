@@ -31,6 +31,10 @@ def report(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
+    stig: str | None = typer.Option(
+        None, "--stig", "-s",
+        help="STIG profile to use (e.g., 'asd'). Defaults to the default profile.",
+    ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
         help="Output format: 'md' (Markdown) or 'pdf'.",
@@ -50,7 +54,7 @@ def report(
     from stigcode.output.report import generate_report, write_report
 
     rpt, benchmark, db, _sarif_result = load_pipeline(
-        sarif_file, mapping_file, classifications_file, xccdf_file
+        sarif_file, mapping_file, classifications_file, xccdf_file, stig=stig
     )
 
     if fmt == "pdf":
@@ -86,6 +90,10 @@ def coverage(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
+    stig: str | None = typer.Option(
+        None, "--stig", "-s",
+        help="STIG profile to use (e.g., 'asd'). Defaults to the default profile.",
+    ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
         help="Output format: 'md' (Markdown), 'csv', or 'pdf'.",
@@ -111,7 +119,7 @@ def coverage(
     )
 
     rpt, benchmark, db, _sarif_result = load_pipeline(
-        sarif_file, mapping_file, classifications_file, xccdf_file
+        sarif_file, mapping_file, classifications_file, xccdf_file, stig=stig
     )
 
     try:
@@ -158,6 +166,10 @@ def poam(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
+    stig: str | None = typer.Option(
+        None, "--stig", "-s",
+        help="STIG profile to use (e.g., 'asd'). Defaults to the default profile.",
+    ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
         help="Output format: 'md', 'csv', or 'pdf'.",
@@ -178,7 +190,7 @@ def poam(
     from stigcode.output.poam import build_poam, poam_to_csv, poam_to_markdown, write_poam
 
     rpt, benchmark, db, sarif_result = load_pipeline(
-        sarif_file, mapping_file, classifications_file, xccdf_file
+        sarif_file, mapping_file, classifications_file, xccdf_file, stig=stig
     )
 
     try:

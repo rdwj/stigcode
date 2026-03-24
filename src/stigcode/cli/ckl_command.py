@@ -31,6 +31,10 @@ def ckl(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
+    stig: str | None = typer.Option(
+        None, "--stig", "-s",
+        help="STIG profile to use (e.g., 'asd'). Defaults to the default profile.",
+    ),
     host_name: str = typer.Option(
         "", "--host-name", help="Target host name for the CKL ASSET block."
     ),
@@ -50,7 +54,7 @@ def ckl(
     from stigcode.output.ckl import AssetInfo, generate_ckl, write_ckl
 
     rpt, benchmark, db, _sarif_result = load_pipeline(
-        sarif_file, mapping_file, classifications_file, xccdf_file
+        sarif_file, mapping_file, classifications_file, xccdf_file, stig=stig
     )
 
     asset = AssetInfo(host_name=host_name, host_ip=host_ip)

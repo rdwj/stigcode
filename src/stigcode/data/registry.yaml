@@ -1,0 +1,25 @@
+# Available STIG profiles
+#
+# Each entry defines a STIG benchmark with its associated data files.
+# Adding a new STIG requires creating the mapping and classification
+# data files, then adding an entry here.
+
+stigs:
+  asd:
+    name: "Application Security and Development"
+    version: "V6R3"
+    mapping_file: "mappings/asd_stig_v6r3.yaml"
+    classifications_file: "mappings/finding_classifications.yaml"
+    xccdf_file: "stigs/application_security_and_development.xml"
+    description: "DISA AppDev STIG for custom application code"
+
+  # Future STIGs — add entries here with corresponding data files:
+  # container-srg:
+  #   name: "Container Platform SRG"
+  #   version: "V2R2"
+  #   mapping_file: "mappings/container_srg_v2r2.yaml"
+  #   classifications_file: "mappings/container_srg_classifications.yaml"
+  #   xccdf_file: "stigs/container_platform_srg.xml"
+  #   description: "DISA Container Platform SRG for container deployments"
+
+default: asd

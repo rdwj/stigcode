@@ -82,12 +82,16 @@ def assess(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
+    stig: str | None = typer.Option(
+        None, "--stig", "-s",
+        help="STIG profile to use (e.g., 'asd'). Defaults to the default profile.",
+    ),
 ) -> None:
     """Assess a SARIF scan against a STIG benchmark and print a status summary."""
     from stigcode.mapping.status import CklStatus
 
     rpt, benchmark, _db, _sarif_result = load_pipeline(
-        sarif_file, mapping_file, classifications_file, xccdf_file
+        sarif_file, mapping_file, classifications_file, xccdf_file, stig=stig
     )
 
     typer.echo(f"Scanner: {rpt.scan_summary['scanner_name'] or 'unknown'}")

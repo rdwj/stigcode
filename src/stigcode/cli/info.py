@@ -1,4 +1,4 @@
-"""Info sub-commands: mapping database inspection."""
+"""Info sub-commands: mapping database inspection and STIG registry listing."""
 
 from __future__ import annotations
 
@@ -8,7 +8,6 @@ import typer
 import yaml
 
 from stigcode.cli import info_app
-from stigcode.cli.pipeline import _DEFAULT_CLASSIFICATIONS
 
 
 @info_app.command(name="mappings")
@@ -21,20 +20,30 @@ def info_mappings(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML for full finding metadata.",
     ),
+    stig: str | None = typer.Option(
+        None, "--stig", "-s",
+        help="STIG profile to use (e.g., 'asd'). Defaults to the default profile.",
+    ),
     fmt: str = typer.Option(
         "md", "--format", "-f",
         help="Output format for --output: 'md' or 'csv'.",
     ),
 ) -> None:
     """Show mapping database stats; optionally write the cross-reference matrix."""
-    from stigcode.data import get_cci_mappings, get_mapping_database
+    from stigcode.data import get_cci_mappings, get_mapping_database, get_stig_profile
 
     if fmt not in ("md", "csv"):
         typer.echo(f"Error: --format must be 'md' or 'csv', got {fmt!r}", err=True)
         raise typer.Exit(code=2) from None
 
     try:
-        db = get_mapping_database()
+        profile = get_stig_profile(stig)
+    except KeyError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2) from None
+
+    try:
+        db = get_mapping_database(stig_key=profile.key)
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=2) from None
@@ -71,7 +80,7 @@ def info_mappings(
         benchmark = parse_xccdf(xccdf_file)
     else:
         # Synthetic benchmark from mapping db + classifications
-        cls_path = _DEFAULT_CLASSIFICATIONS
+        cls_path = profile.classifications_file
         if not cls_path.exists():
             typer.echo(
                 f"Error: classifications file not found: {cls_path}", err=True
@@ -107,7 +116,7 @@ def info_mappings(
             profiles={},
         )
 
-    cls_path = _DEFAULT_CLASSIFICATIONS
+    cls_path = profile.classifications_file
     raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
     classifications = raw_cls.get("classifications", {})
 
@@ -123,3 +132,36 @@ def info_mappings(
         f"\nCross-reference matrix ({len(entries)} entries) written to {output}",
         err=True,
     )
+
+
+@info_app.command(name="stigs")
+def info_stigs() -> None:
+    """List available STIG profiles."""
+    from stigcode.data import get_available_stigs, get_default_stig_key, get_mapping_database
+
+    try:
+        profiles = get_available_stigs()
+    except (FileNotFoundError, ValueError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2) from None
+
+    default_key = get_default_stig_key()
+
+    typer.echo("Available STIG profiles:\n")
+
+    for key, profile in sorted(profiles.items()):
+        suffix = " (default)" if key == default_key else ""
+        typer.echo(f"  {key}{suffix}")
+        typer.echo(f"    {profile.name} {profile.version}")
+        typer.echo(f"    {profile.description}")
+
+        # Try to load mapping stats
+        try:
+            db = get_mapping_database(stig_key=key)
+            stig_count = len(db.all_stig_ids())
+            total_mappings = len(db.mappings)
+            typer.echo(f"    Mappings: {total_mappings} | SAST findings: {stig_count}")
+        except (FileNotFoundError, ValueError):
+            typer.echo("    Mappings: not loaded (data files may be missing)")
+
+        typer.echo("")

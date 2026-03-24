@@ -8,10 +8,32 @@ from pathlib import Path
 import typer
 import yaml
 
-from stigcode.data import get_data_dir
+from stigcode.data import get_data_dir, get_stig_profile
 
-_DEFAULT_MAPPING = get_data_dir() / "mappings" / "asd_stig_v6r3.yaml"
-_DEFAULT_CLASSIFICATIONS = get_data_dir() / "mappings" / "finding_classifications.yaml"
+
+def _resolve_stig_paths(
+    mapping_file: Path | None,
+    classifications_file: Path | None,
+    xccdf_file: Path | None,
+    stig: str | None,
+) -> tuple[Path, Path, Path | None]:
+    """Resolve mapping, classifications, and XCCDF paths.
+
+    Priority:
+    1. Explicit CLI flags (--mappings, --classifications, --xccdf)
+    2. STIG profile lookup via --stig or the default profile
+    """
+    try:
+        profile = get_stig_profile(stig)
+    except KeyError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=2) from None
+
+    resolved_mapping = mapping_file or profile.mapping_file
+    resolved_classifications = classifications_file or profile.classifications_file
+    resolved_xccdf = xccdf_file or profile.xccdf_file
+
+    return resolved_mapping, resolved_classifications, resolved_xccdf
 
 
 def load_pipeline(
@@ -19,10 +41,18 @@ def load_pipeline(
     mapping_file: Path | None,
     classifications_file: Path | None,
     xccdf_file: Path | None,
+    stig: str | None = None,
 ):
     """Load all inputs and run status determination.
 
     Handles stdin, default paths, and the synthetic-benchmark fallback.
+
+    Args:
+        sarif_file: Path to a SARIF file, or ``"-"`` for stdin.
+        mapping_file: Explicit mapping file override.
+        classifications_file: Explicit classifications file override.
+        xccdf_file: Explicit XCCDF file override.
+        stig: STIG profile key (e.g. ``"asd"``). Uses the default if None.
 
     Returns:
         Tuple of (StatusReport, StigBenchmark, MappingDatabase, SarifResult)
@@ -35,6 +65,11 @@ def load_pipeline(
     from stigcode.ingest.xccdf import StigBenchmark, StigFinding, parse_xccdf
     from stigcode.mapping.engine import load_mapping_database
     from stigcode.mapping.status import determine_status
+
+    # --- Resolve STIG profile paths ---
+    mapping_path, cls_path, xccdf_path = _resolve_stig_paths(
+        mapping_file, classifications_file, xccdf_file, stig,
+    )
 
     # --- Load SARIF ---
     if sarif_file == "-":
@@ -52,7 +87,6 @@ def load_pipeline(
             typer.echo(f"Warning: {err}", err=True)
 
     # --- Load mapping database ---
-    mapping_path = mapping_file or _DEFAULT_MAPPING
     if not mapping_path.exists():
         typer.echo(f"Error: mapping file not found: {mapping_path}", err=True)
         typer.echo(
@@ -63,7 +97,6 @@ def load_pipeline(
     db = load_mapping_database(mapping_path)
 
     # --- Load classifications ---
-    cls_path = classifications_file or _DEFAULT_CLASSIFICATIONS
     if not cls_path.exists():
         typer.echo(f"Error: classifications file not found: {cls_path}", err=True)
         raise typer.Exit(code=2)
@@ -71,11 +104,12 @@ def load_pipeline(
     classifications: dict = raw_cls.get("classifications", {})
 
     # --- Load benchmark (real XCCDF or synthetic fallback) ---
-    if xccdf_file is not None:
-        if not xccdf_file.exists():
-            typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
-            raise typer.Exit(code=2)
-        benchmark = parse_xccdf(xccdf_file)
+    if xccdf_path is not None and xccdf_path.exists():
+        benchmark = parse_xccdf(xccdf_path)
+    elif xccdf_file is not None:
+        # User explicitly passed --xccdf but file doesn't exist
+        typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
+        raise typer.Exit(code=2)
     else:
         stig_ids = sorted(db.all_stig_ids())
         synthetic_findings: list[StigFinding] = [

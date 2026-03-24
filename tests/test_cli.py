@@ -227,3 +227,59 @@ class TestInfoMappings:
         assert result.exit_code == 2, (
             f"Expected exit 2 for invalid format, got {result.exit_code}"
         )
+
+
+class TestInfoStigs:
+    def test_exits_zero(self):
+        result = runner.invoke(app, ["info", "stigs"])
+        assert result.exit_code == 0, (
+            f"Expected exit 0, got {result.exit_code}.\n{result.output}"
+        )
+
+    def test_output_contains_asd(self):
+        result = runner.invoke(app, ["info", "stigs"])
+        assert "asd" in result.output, (
+            f"Expected 'asd' in output:\n{result.output}"
+        )
+
+    def test_output_contains_default_marker(self):
+        result = runner.invoke(app, ["info", "stigs"])
+        assert "default" in result.output, (
+            f"Expected 'default' marker in output:\n{result.output}"
+        )
+
+    def test_output_contains_stig_name(self):
+        result = runner.invoke(app, ["info", "stigs"])
+        assert "Application Security and Development" in result.output
+
+    def test_output_contains_mapping_count(self):
+        result = runner.invoke(app, ["info", "stigs"])
+        assert "Mappings:" in result.output
+
+
+class TestStigOption:
+    """Commands that accept --stig produce correct results."""
+
+    def test_report_with_stig_asd(self):
+        result = runner.invoke(
+            app, ["report", str(SARIF_CWE_TAGS), "--stig", "asd"]
+        )
+        assert result.exit_code == 0, (
+            f"Expected exit 0, got {result.exit_code}.\n{result.output}"
+        )
+
+    def test_assess_with_stig_asd(self):
+        result = runner.invoke(
+            app, ["assess", str(SARIF_CWE_TAGS), "--stig", "asd"]
+        )
+        assert result.exit_code == 0, (
+            f"Expected exit 0, got {result.exit_code}.\n{result.output}"
+        )
+
+    def test_unknown_stig_exits_2(self):
+        result = runner.invoke(
+            app, ["report", str(SARIF_CWE_TAGS), "--stig", "nonexistent"]
+        )
+        assert result.exit_code == 2, (
+            f"Expected exit 2, got {result.exit_code}.\n{result.output}"
+        )
