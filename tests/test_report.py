@@ -1,4 +1,4 @@
-"""Tests for the ATO evidence summary report generator (output.report)."""
+"""Tests for the 800-53 control evidence report generator (output.report)."""
 
 from __future__ import annotations
 
@@ -147,31 +147,98 @@ def report_md(status_report, benchmark, mapping_db, scan_date) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Structure tests
+# Title and top-level structure
 # ---------------------------------------------------------------------------
+
+def test_report_title(report_md):
+    assert "# Security Assessment Evidence" in report_md, (
+        f"Expected 'Security Assessment Evidence' title. Got:\n{report_md[:500]}"
+    )
+
+
+def test_report_contains_purpose(report_md):
+    assert "## Purpose" in report_md
+
+
+def test_report_contains_applicable_controls(report_md):
+    assert "## Applicable Controls" in report_md, "Missing Applicable Controls section"
+
+
+def test_report_mentions_sa11(report_md):
+    assert "SA-11" in report_md, "SA-11 must appear in report"
+
 
 def test_report_contains_executive_summary(report_md):
     assert "## Executive Summary" in report_md, "Missing Executive Summary section"
+
+
+def test_report_contains_control_evidence(report_md):
+    assert "## Control Evidence" in report_md
 
 
 def test_report_contains_findings_by_severity(report_md):
     assert "## Findings by Severity" in report_md
 
 
-def test_report_contains_open_findings(report_md):
-    assert "## Open Findings" in report_md
+def test_report_contains_open_findings_summary(report_md):
+    assert "## Open Findings Summary" in report_md
 
 
 def test_report_contains_nist_control_mapping(report_md):
     assert "## NIST 800-53 Control Mapping" in report_md
 
 
+def test_report_contains_scope_and_limitations(report_md):
+    assert "## Assessment Scope and Limitations" in report_md, (
+        "Missing Scope and Limitations section"
+    )
+
+
 def test_report_contains_methodology(report_md):
-    assert "## Assessment Methodology" in report_md
+    assert "## Methodology" in report_md
 
 
 def test_report_contains_attestation(report_md):
     assert "## Attestation" in report_md
+
+
+# ---------------------------------------------------------------------------
+# SA-11 assessment status logic
+# ---------------------------------------------------------------------------
+
+def test_sa11_status_other_than_satisfied_when_cat1_open(report_md):
+    # Fixture has a CAT I open finding (V-100001)
+    assert "Other Than Satisfied" in report_md, (
+        f"Expected 'Other Than Satisfied' due to open CAT I. Got:\n{report_md[:1000]}"
+    )
+
+
+def test_sa11_status_satisfied_when_no_open(benchmark, mapping_db, scan_date):
+    determinations = [
+        _make_determination("V-100001", CklStatus.NOT_A_FINDING),
+        _make_determination("V-100002", CklStatus.NOT_A_FINDING),
+    ]
+    report = StatusReport(
+        determinations=determinations,
+        scan_summary={"scanner_name": "Semgrep", "scanner_version": "1.50", "total_stig_findings": 2},
+    )
+    md = generate_report(report, benchmark, mapping_db, scan_date)
+    assert "Satisfied" in md
+    assert "Other Than Satisfied" not in md
+    assert "Partially Satisfied" not in md
+
+
+def test_sa11_status_partially_satisfied_when_only_cat2_open(benchmark, mapping_db, scan_date):
+    determinations = [
+        _make_determination("V-100001", CklStatus.NOT_A_FINDING),  # CAT I, closed
+        _make_determination("V-100002", CklStatus.OPEN),            # CAT II, open
+    ]
+    report = StatusReport(
+        determinations=determinations,
+        scan_summary={"scanner_name": "Semgrep", "scanner_version": "1.50", "total_stig_findings": 2},
+    )
+    md = generate_report(report, benchmark, mapping_db, scan_date)
+    assert "Partially Satisfied" in md, f"Expected 'Partially Satisfied':\n{md[:1000]}"
 
 
 # ---------------------------------------------------------------------------
@@ -210,6 +277,14 @@ def test_open_finding_stig_id_present(report_md):
 
 
 # ---------------------------------------------------------------------------
+# POA&M framing
+# ---------------------------------------------------------------------------
+
+def test_open_findings_framed_as_poam(report_md):
+    assert "POA&M" in report_md, "Open findings should reference POA&M"
+
+
+# ---------------------------------------------------------------------------
 # Evidence locations
 # ---------------------------------------------------------------------------
 
@@ -245,6 +320,16 @@ def test_methodology_mentions_inferred_confidence(report_md):
 
 def test_methodology_mentions_not_reviewed(report_md):
     assert "Not Reviewed" in report_md
+
+
+# ---------------------------------------------------------------------------
+# Scope and limitations content
+# ---------------------------------------------------------------------------
+
+def test_scope_mentions_static_analysis(report_md):
+    assert "static analysis" in report_md.lower(), (
+        "Scope section should mention static analysis limitations"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -290,7 +375,6 @@ def test_custom_scan_date_used(status_report, benchmark, mapping_db):
 def test_default_scan_date_is_present(status_report, benchmark, mapping_db):
     """Without a scan_date argument, the report should still include a date."""
     md = generate_report(status_report, benchmark, mapping_db)
-    # Just check the date column exists — exact value depends on when test runs
     assert "Assessment Date" in md
 
 
@@ -339,12 +423,15 @@ def test_integration_real_pipeline():
 
     assert len(md) > 100, f"Report unexpectedly short ({len(md)} chars)"
     for heading in [
-        "# STIG Compliance Assessment Report",
+        "# Security Assessment Evidence",
+        "## Applicable Controls",
+        "SA-11",
         "## Executive Summary",
         "## Findings by Severity",
-        "## Open Findings",
+        "## Open Findings Summary",
         "## NIST 800-53 Control Mapping",
-        "## Assessment Methodology",
+        "## Assessment Scope and Limitations",
+        "## Methodology",
         "## Attestation",
     ]:
         assert heading in md, f"Missing section: {heading!r}"
