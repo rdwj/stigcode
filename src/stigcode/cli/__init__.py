@@ -31,6 +31,7 @@ from stigcode.cli import ckl_command as _ckl_command  # noqa: F401, E402
 from stigcode.cli import commands as _commands  # noqa: F401, E402
 from stigcode.cli import info as _info  # noqa: F401, E402
 from stigcode.cli import lookup as _lookup  # noqa: F401, E402
+from stigcode.cli import oscal_command as _oscal_command  # noqa: F401, E402
 from stigcode.cli import output_commands as _output_commands  # noqa: F401, E402
 from stigcode.cli import stig as _stig  # noqa: F401, E402
 from stigcode.cli import trend as _trend  # noqa: F401, E402
