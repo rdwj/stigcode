@@ -11,11 +11,12 @@ from pathlib import Path
 
 import pytest
 
+from stigcode.data import get_data_dir
 from stigcode.mapping.engine import MappingDatabase, load_mapping_database
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-MAPPING_FILE = PROJECT_ROOT / "data" / "mappings" / "asd_stig_v6r3.yaml"
-XCCDF_FILE = PROJECT_ROOT / "data" / "stigs" / "application_security_and_development.xml"
+_DATA_DIR = get_data_dir()
+MAPPING_FILE = _DATA_DIR / "mappings" / "asd_stig_v6r3.yaml"
+XCCDF_FILE = _DATA_DIR / "stigs" / "application_security_and_development.xml"
 XCCDF_NS = {"xccdf": "http://checklists.nist.gov/xccdf/1.1"}
 
 VALID_CONFIDENCE_LEVELS = {"direct", "inferred", "partial"}

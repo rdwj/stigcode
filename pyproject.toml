@@ -49,5 +49,8 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"stigcode.data" = ["**/*.yaml", "**/*.xml"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

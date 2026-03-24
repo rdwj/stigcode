@@ -253,7 +253,7 @@ def test_all_not_reviewed_report():
 
 
 # ---------------------------------------------------------------------------
-# Findings with no CCI refs (should not appear in matrix)
+# Findings with no CCI refs (should not appear in matrix without mapping_db)
 # ---------------------------------------------------------------------------
 
 def test_findings_without_cci_refs_excluded():
@@ -269,6 +269,69 @@ def test_findings_without_cci_refs_excluded():
     # Only AC-2 should appear; V-1 with no CCIs is excluded
     assert matrix.total_controls == 1
     assert matrix.controls[0].control_id == "AC-2"
+
+
+# ---------------------------------------------------------------------------
+# mapping_db fallback for synthetic benchmarks (no CCI refs)
+# ---------------------------------------------------------------------------
+
+def _make_mapping_db(stig_id: str, nist_control: str) -> MappingDatabase:
+    return MappingDatabase(
+        mappings=[
+            StigMapping(
+                cwe_id=89,
+                stig_id=stig_id,
+                check_id="APSC-DV-002540",
+                confidence="direct",
+                nist_control=nist_control,
+                cci_refs=["CCI-001310"],
+            )
+        ],
+        version="1.0",
+        stig_name="Test STIG",
+        stig_version="V1R1",
+    )
+
+
+def test_mapping_db_fallback_populates_matrix_without_cci_refs():
+    """Synthetic benchmark findings (no CCI refs) should resolve via mapping_db."""
+    findings = [_finding("V-222607", [])]  # no CCI refs
+    dets = [_det("V-222607", CklStatus.OPEN)]
+    db = _make_mapping_db("V-222607", "SI-10")
+
+    matrix = build_coverage_matrix(_report(dets), _benchmark(findings), {}, mapping_db=db)
+
+    assert matrix.total_controls == 1, (
+        f"Expected 1 control from mapping_db fallback, got {matrix.total_controls}"
+    )
+    assert matrix.controls[0].control_id == "SI-10"
+    assert matrix.controls[0].open_findings == 1
+
+
+def test_cci_takes_precedence_over_mapping_db():
+    """When a finding has CCI refs that resolve, the mapping_db nist_control is not used."""
+    findings = [_finding("V-222607", ["CCI-000054"])]  # CCI → AC-2
+    dets = [_det("V-222607", CklStatus.OPEN)]
+    db = _make_mapping_db("V-222607", "SI-10")  # DB says SI-10
+
+    # CCI_MAPPINGS maps CCI-000054 → AC-2, so AC-2 should win
+    matrix = build_coverage_matrix(_report(dets), _benchmark(findings), CCI_MAPPINGS, mapping_db=db)
+
+    control_ids = {c.control_id for c in matrix.controls}
+    assert "AC-2" in control_ids, f"Expected AC-2 from CCI path, got {control_ids}"
+    assert "SI-10" not in control_ids, f"SI-10 from mapping_db should not appear when CCI resolves"
+
+
+def test_mapping_db_none_behaves_as_before():
+    """Omitting mapping_db keeps the original behavior: no-CCI findings are excluded."""
+    findings = [_finding("V-1", [])]
+    dets = [_det("V-1", CklStatus.OPEN)]
+
+    matrix = build_coverage_matrix(_report(dets), _benchmark(findings), CCI_MAPPINGS)
+
+    assert matrix.total_controls == 0, (
+        f"Without mapping_db, no-CCI findings should produce an empty matrix"
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -6,12 +6,13 @@ import pytest
 from typer.testing import CliRunner
 
 from stigcode.cli import app
+from stigcode.data import get_data_dir
 from stigcode.version import __version__
 
 runner = CliRunner()
 
 FIXTURES = Path(__file__).parent / "fixtures"
-XCCDF_FILE = Path(__file__).parent.parent / "data" / "stigs" / "application_security_and_development.xml"
+XCCDF_FILE = get_data_dir() / "stigs" / "application_security_and_development.xml"
 SARIF_CWE_TAGS = FIXTURES / "sarif" / "cwe_in_tags.sarif"
 
 

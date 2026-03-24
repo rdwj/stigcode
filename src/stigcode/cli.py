@@ -9,6 +9,7 @@ from typing import Optional
 import typer
 import yaml
 
+from stigcode.data import get_data_dir
 from stigcode.version import __version__
 
 DESCRIPTION = "SARIF-to-compliance bridge"
@@ -20,10 +21,8 @@ _ISSUE_CKL = 5
 _ISSUE_REPORT = 6
 _ISSUE_COVERAGE = 7
 
-_DEFAULT_MAPPING = Path(__file__).parent.parent.parent / "data" / "mappings" / "asd_stig_v6r3.yaml"
-_DEFAULT_CLASSIFICATIONS = (
-    Path(__file__).parent.parent.parent / "data" / "mappings" / "finding_classifications.yaml"
-)
+_DEFAULT_MAPPING = get_data_dir() / "mappings" / "asd_stig_v6r3.yaml"
+_DEFAULT_CLASSIFICATIONS = get_data_dir() / "mappings" / "finding_classifications.yaml"
 
 app = typer.Typer(help=DESCRIPTION, no_args_is_help=True)
 export_app = typer.Typer(help="Generate compliance artifacts from imported findings.", no_args_is_help=True)
@@ -346,7 +345,7 @@ def export_coverage(
         write_coverage,
     )
 
-    report, benchmark, _db, _sarif_result = _load_pipeline(
+    report, benchmark, db, _sarif_result = _load_pipeline(
         sarif_file, mapping_file, classifications_file, xccdf_file
     )
 
@@ -356,7 +355,7 @@ def export_coverage(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=2)
 
-    matrix = build_coverage_matrix(report, benchmark, cci_mappings)
+    matrix = build_coverage_matrix(report, benchmark, cci_mappings, mapping_db=db)
 
     if output is not None:
         write_coverage(matrix, output, fmt=fmt)

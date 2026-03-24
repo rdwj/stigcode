@@ -1,7 +1,12 @@
 """Runtime data loading for stigcode.
 
 Provides access to the mapping databases and CCI→NIST tables that ship
-alongside the package under the repository's top-level ``data/`` directory.
+alongside the package.  The authoritative data lives inside this package
+directory (``src/stigcode/data/``) so it is correctly included in both
+editable installs and standard ``pip install`` deployments.
+
+The top-level ``data/`` directory at the repo root is kept as a reference
+copy for human browsing but is *not* used at runtime.
 """
 
 from __future__ import annotations
@@ -18,19 +23,14 @@ from stigcode.mapping.engine import MappingDatabase, load_mapping_database
 # Path resolution
 # ---------------------------------------------------------------------------
 
-# src/stigcode/data/__init__.py  →  ../../../data/
-_PACKAGE_DIR = Path(__file__).parent          # src/stigcode/data/
-_SRC_STIGCODE = _PACKAGE_DIR.parent           # src/stigcode/
-_REPO_ROOT = _SRC_STIGCODE.parent.parent      # repo root
-_DATA_DIR = _REPO_ROOT / "data"
+# Resolved relative to *this* file so it works in both editable installs
+# (where __file__ points into src/stigcode/data/) and standard pip installs
+# (where __file__ points into site-packages/stigcode/data/).
+_DATA_DIR = Path(__file__).parent
 
 
 def get_data_dir() -> Path:
-    """Return the path to the top-level ``data/`` directory.
-
-    This directory is peer to ``src/`` in the repository layout and is
-    expected to be present in both development and installed-package
-    environments.
+    """Return the path to the package's bundled ``data/`` directory.
 
     Raises:
         FileNotFoundError: if the directory cannot be located.
@@ -88,7 +88,7 @@ def get_cci_mappings() -> dict[str, str]:
     if not cci_file.exists():
         raise FileNotFoundError(
             f"CCI mapping file not found: {cci_file}. "
-            "Ensure data/cci/cci_to_nist.yaml is present."
+            "Ensure data/cci/cci_to_nist.yaml is present in the package."
         )
 
     raw = cci_file.read_text(encoding="utf-8")

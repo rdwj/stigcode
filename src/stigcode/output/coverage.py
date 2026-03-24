@@ -10,8 +10,10 @@ import csv
 import io
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Optional
 
 from stigcode.ingest.xccdf import StigBenchmark
+from stigcode.mapping.engine import MappingDatabase
 from stigcode.mapping.status import CklStatus, StatusReport
 
 NIST_FAMILIES: dict[str, str] = {
@@ -113,6 +115,7 @@ def build_coverage_matrix(
     report: StatusReport,
     benchmark: StigBenchmark,
     cci_mappings: dict[str, str],
+    mapping_db: Optional[MappingDatabase] = None,
 ) -> CoverageMatrix:
     """Build a NIST 800-53 coverage matrix from assessment results.
 
@@ -121,6 +124,11 @@ def build_coverage_matrix(
         benchmark: Parsed STIG benchmark (source of CCI refs per finding).
         cci_mappings: Dict mapping CCI IDs to NIST control IDs,
                       e.g. {"CCI-000054": "AC-2"}.
+        mapping_db: Optional CWE→STIG mapping database used as a fallback
+                    when a finding has no CCI refs (or none resolve to a known
+                    control).  When provided, any STIG ID that still has no
+                    resolved NIST control is looked up in the mapping DB and
+                    the first ``nist_control`` value found is used.
 
     Returns:
         CoverageMatrix sorted by control family then control ID.
@@ -129,6 +137,14 @@ def build_coverage_matrix(
     status_by_stig: dict[str, CklStatus] = {
         d.stig_id: d.status for d in report.determinations
     }
+
+    # Pre-build a stig_id → nist_control index from the mapping DB so the
+    # fallback lookup is O(1) rather than O(n) per finding.
+    db_nist_by_stig: dict[str, str] = {}
+    if mapping_db is not None:
+        for m in mapping_db.mappings:
+            if m.stig_id not in db_nist_by_stig and m.nist_control:
+                db_nist_by_stig[m.stig_id] = m.nist_control
 
     # Accumulate per-control stats
     # control_id → {open, naf, nr, stig_ids}
@@ -140,14 +156,18 @@ def build_coverage_matrix(
         if status is None:
             continue
 
-        # Map each CCI ref to a NIST control
+        # Map each CCI ref to a NIST control (highest fidelity path)
         nist_controls: set[str] = set()
         for cci in finding.cci_refs:
             control = cci_mappings.get(cci)
             if control:
                 nist_controls.add(control)
 
-        # If no CCI refs resolve to a known control, skip
+        # Fallback: use the mapping DB's nist_control when no CCI resolved
+        if not nist_controls and stig_id in db_nist_by_stig:
+            nist_controls.add(db_nist_by_stig[stig_id])
+
+        # Still nothing — skip (can't attribute to a NIST control)
         if not nist_controls:
             continue
 
