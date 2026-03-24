@@ -6,7 +6,7 @@ from pathlib import Path
 
 import typer
 
-from stigcode.cli import stig_app, ISSUES_URL
+from stigcode.cli import ISSUES_URL, stig_app
 
 
 def _not_implemented(issue: int) -> None:

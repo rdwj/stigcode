@@ -17,14 +17,16 @@ pytest
 pytest tests/test_specific.py          # single file
 pytest -k "test_name"                  # by pattern
 
-# Lint / format (not yet configured — add ruff or similar when ready)
+# Lint / format
+ruff check src/ tests/
+ruff check src/ tests/ --fix   # auto-fix safe issues
 ```
 
 The package uses setuptools with `src/` layout. Entry point: `stigcode.cli:main` (defined in `pyproject.toml`). Version lives in `src/stigcode/version.py` and must be kept in sync with `pyproject.toml [project] version`.
 
 ## Project Status
 
-Early scaffold — CLI prints a banner and exits. The `ingest/`, `mapping/`, `output/`, and `data/` subpackages described in the architecture below do not exist yet. The `data/` directory with YAML mappings also needs to be created.
+Alpha release (v0.1.0). Core pipeline is functional: SARIF ingestion from any scanner, CWE→STIG mapping (126 mappings, 80 SAST-assessable findings), and six output formats (SA-11 evidence report, NIST 800-53 coverage matrix, POA&M candidates, CKL checklist, cross-reference matrix, trend analysis). Output available as Markdown, CSV, and PDF. 386 tests passing.
 
 # Stigcode — Project Context
 

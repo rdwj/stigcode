@@ -383,9 +383,7 @@ def test_write_poam_bad_format(tmp_path, status_report, benchmark, mapping_db):
 )
 def test_integration_sarif_to_poam(mapping_db):
     """Full pipeline: parse SARIF, determine status, generate POA&M."""
-    from stigcode.ingest.sarif import parse_sarif
     from stigcode.ingest.xccdf import parse_xccdf
-    from stigcode.mapping.status import determine_status
 
     sarif_result = parse_sarif(SARIF_CWE_TAGS)
     assert sarif_result.errors == [], f"SARIF parse errors: {sarif_result.errors}"

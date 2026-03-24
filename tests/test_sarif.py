@@ -3,8 +3,6 @@
 import json
 from pathlib import Path
 
-import pytest
-
 from stigcode.ingest.sarif import NormalizedFinding, SarifIngestionResult, parse_sarif
 
 SARIF_DIR = Path(__file__).parent / "fixtures" / "sarif"

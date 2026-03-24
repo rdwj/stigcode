@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 import typer
 import yaml
@@ -17,9 +16,9 @@ _DEFAULT_CLASSIFICATIONS = get_data_dir() / "mappings" / "finding_classification
 
 def load_pipeline(
     sarif_file: str,
-    mapping_file: Optional[Path],
-    classifications_file: Optional[Path],
-    xccdf_file: Optional[Path],
+    mapping_file: Path | None,
+    classifications_file: Path | None,
+    xccdf_file: Path | None,
 ):
     """Load all inputs and run status determination.
 
@@ -33,7 +32,7 @@ def load_pipeline(
         to stderr.
     """
     from stigcode.ingest.sarif import parse_sarif
-    from stigcode.ingest.xccdf import parse_xccdf, StigBenchmark, StigFinding
+    from stigcode.ingest.xccdf import StigBenchmark, StigFinding, parse_xccdf
     from stigcode.mapping.engine import load_mapping_database
     from stigcode.mapping.status import determine_status
 

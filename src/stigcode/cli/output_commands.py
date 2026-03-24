@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -16,19 +15,19 @@ def report(
     sarif_file: str = typer.Argument(
         ..., help="Path to SARIF file, or '-' to read from stdin."
     ),
-    output: Optional[Path] = typer.Option(
+    output: Path | None = typer.Option(
         None, "--output", "-o",
         help="Output file path. Prints to stdout if omitted.",
     ),
-    xccdf_file: Optional[Path] = typer.Option(
+    xccdf_file: Path | None = typer.Option(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML file for full benchmark metadata.",
     ),
-    mapping_file: Optional[Path] = typer.Option(
+    mapping_file: Path | None = typer.Option(
         None, "--mappings", "-m",
         help="Path to CWE-to-STIG mapping YAML.",
     ),
-    classifications_file: Optional[Path] = typer.Option(
+    classifications_file: Path | None = typer.Option(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
@@ -42,11 +41,11 @@ def report(
         typer.echo(
             f"Error: --format must be 'md' or 'pdf', got {fmt!r}", err=True
         )
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     if fmt == "pdf" and output is None:
         typer.echo("Error: --output is required when --format pdf is used.", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     from stigcode.output.report import generate_report, write_report
 
@@ -71,19 +70,19 @@ def coverage(
     sarif_file: str = typer.Argument(
         ..., help="Path to SARIF file, or '-' to read from stdin."
     ),
-    output: Optional[Path] = typer.Option(
+    output: Path | None = typer.Option(
         None, "--output", "-o",
         help="Output file path. Prints to stdout if omitted.",
     ),
-    xccdf_file: Optional[Path] = typer.Option(
+    xccdf_file: Path | None = typer.Option(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML file for full benchmark metadata.",
     ),
-    mapping_file: Optional[Path] = typer.Option(
+    mapping_file: Path | None = typer.Option(
         None, "--mappings", "-m",
         help="Path to CWE-to-STIG mapping YAML.",
     ),
-    classifications_file: Optional[Path] = typer.Option(
+    classifications_file: Path | None = typer.Option(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
@@ -97,11 +96,11 @@ def coverage(
         typer.echo(
             f"Error: --format must be 'md', 'csv', or 'pdf', got {fmt!r}", err=True
         )
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     if fmt == "pdf" and output is None:
         typer.echo("Error: --output is required when --format pdf is used.", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     from stigcode.data import get_cci_mappings
     from stigcode.output.coverage import (
@@ -119,7 +118,7 @@ def coverage(
         cci_mappings = get_cci_mappings()
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     matrix = build_coverage_matrix(rpt, benchmark, cci_mappings, mapping_db=db)
 
@@ -143,19 +142,19 @@ def poam(
     sarif_file: str = typer.Argument(
         ..., help="Path to SARIF file, or '-' to read from stdin."
     ),
-    output: Optional[Path] = typer.Option(
+    output: Path | None = typer.Option(
         None, "--output", "-o",
         help="Output file path. Prints to stdout if omitted.",
     ),
-    xccdf_file: Optional[Path] = typer.Option(
+    xccdf_file: Path | None = typer.Option(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML file for full benchmark metadata.",
     ),
-    mapping_file: Optional[Path] = typer.Option(
+    mapping_file: Path | None = typer.Option(
         None, "--mappings", "-m",
         help="Path to CWE-to-STIG mapping YAML.",
     ),
-    classifications_file: Optional[Path] = typer.Option(
+    classifications_file: Path | None = typer.Option(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
@@ -169,14 +168,14 @@ def poam(
         typer.echo(
             f"Error: --format must be 'md', 'csv', or 'pdf', got {fmt!r}", err=True
         )
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     if fmt == "pdf" and output is None:
         typer.echo("Error: --output is required when --format pdf is used.", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     from stigcode.data import get_cci_mappings
-    from stigcode.output.poam import build_poam, write_poam, poam_to_markdown, poam_to_csv
+    from stigcode.output.poam import build_poam, poam_to_csv, poam_to_markdown, write_poam
 
     rpt, benchmark, db, sarif_result = load_pipeline(
         sarif_file, mapping_file, classifications_file, xccdf_file
@@ -186,7 +185,7 @@ def poam(
         cci_mappings = get_cci_mappings()
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     poam_report = build_poam(
         report=rpt,

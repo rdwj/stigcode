@@ -15,7 +15,6 @@ from stigcode.mapping.engine import MappingDatabase
 from stigcode.mapping.status import CklStatus, StatusReport
 from stigcode.version import __version__
 
-
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------

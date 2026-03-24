@@ -7,7 +7,7 @@ while updating stigcode-generated content with the latest scan evidence.
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
@@ -17,8 +17,8 @@ from stigcode.ingest.xccdf import StigBenchmark
 from stigcode.mapping.status import CklStatus, StatusReport
 
 from .ckl import (
-    AssetInfo,
     _VULN_ATTRIBUTES,
+    AssetInfo,
     _add_stig_data,
     _build_asset,
     _build_stig_info,
@@ -306,7 +306,6 @@ def _write_vuln(
     severity_justification: str,
 ) -> None:
     """Write a VULN element using provided status/detail/comment values."""
-    from stigcode.ingest.xccdf import StigFinding  # avoid circular at module level
 
     vuln = ET.SubElement(istig, "VULN")
 

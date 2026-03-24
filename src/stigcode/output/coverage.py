@@ -10,7 +10,6 @@ import csv
 import io
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 from stigcode.ingest.xccdf import StigBenchmark
 from stigcode.mapping.engine import MappingDatabase
@@ -115,7 +114,7 @@ def build_coverage_matrix(
     report: StatusReport,
     benchmark: StigBenchmark,
     cci_mappings: dict[str, str],
-    mapping_db: Optional[MappingDatabase] = None,
+    mapping_db: MappingDatabase | None = None,
 ) -> CoverageMatrix:
     """Build a NIST 800-53 coverage matrix from assessment results.
 

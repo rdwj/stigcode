@@ -6,10 +6,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-import pytest
-
 from stigcode.output.trend import (
-    ScanSnapshot,
     analyze_trend,
     fingerprint,
     load_scan_snapshots,

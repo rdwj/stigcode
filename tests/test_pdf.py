@@ -7,11 +7,9 @@ from pathlib import Path
 import pytest
 
 from stigcode.output.pdf import (
-    StigcodePDF,
     _parse_table_rows,
     markdown_to_pdf,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

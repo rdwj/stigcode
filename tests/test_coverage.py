@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import csv
 import io
-from pathlib import Path
 
 import pytest
 
@@ -319,7 +318,7 @@ def test_cci_takes_precedence_over_mapping_db():
 
     control_ids = {c.control_id for c in matrix.controls}
     assert "AC-2" in control_ids, f"Expected AC-2 from CCI path, got {control_ids}"
-    assert "SI-10" not in control_ids, f"SI-10 from mapping_db should not appear when CCI resolves"
+    assert "SI-10" not in control_ids, "SI-10 from mapping_db should not appear when CCI resolves"
 
 
 def test_mapping_db_none_behaves_as_before():
@@ -330,7 +329,7 @@ def test_mapping_db_none_behaves_as_before():
     matrix = build_coverage_matrix(_report(dets), _benchmark(findings), CCI_MAPPINGS)
 
     assert matrix.total_controls == 0, (
-        f"Without mapping_db, no-CCI findings should produce an empty matrix"
+        "Without mapping_db, no-CCI findings should produce an empty matrix"
     )
 
 
@@ -388,7 +387,7 @@ def test_markdown_zero_coverage_section():
     matrix = CoverageMatrix(controls=[ctrl_automated, ctrl_none])
     md = matrix_to_markdown(matrix)
     assert "Zero-Coverage Controls" in md, (
-        f"Expected 'Zero-Coverage Controls' section in Markdown output"
+        "Expected 'Zero-Coverage Controls' section in Markdown output"
     )
     assert "ZZ-99" in md, "Expected ZZ-99 to appear in zero-coverage list"
 

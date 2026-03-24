@@ -111,7 +111,20 @@ stigcode info mappings
 stigcode version
 ```
 
-## Coming Soon
+## Trend Analysis
 
-Trend analysis (`stigcode trend`) and PDF output (`--format pdf`) are under active development.
-Track progress at https://github.com/rdwj/stigcode/issues.
+Track compliance posture changes across successive scans:
+
+```bash
+stigcode trend scan1.sarif scan2.sarif scan3.sarif -o trend-report.md
+stigcode trend scan1.sarif scan2.sarif --format csv -o trend.csv
+```
+
+## PDF Output
+
+All commands that accept `--format` support `pdf` as a value:
+
+```bash
+stigcode report scan.sarif --format pdf -o sa-11-evidence.pdf
+stigcode coverage scan.sarif --format pdf -o coverage.pdf
+```

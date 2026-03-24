@@ -9,7 +9,6 @@ from __future__ import annotations
 import html
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 import defusedxml.ElementTree as ET
 import yaml

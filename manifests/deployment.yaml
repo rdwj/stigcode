@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: stigcode
-          image: quay.io/yourorg/stigcode:0.0.1
+          image: quay.io/yourorg/stigcode:0.1.0
           # Keep the pod alive; replace with a server command when API mode lands.
           command: ["sleep", "infinity"]
           resources:

@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import csv
 import io
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
-from stigcode.ingest.xccdf import StigBenchmark, StigFinding
+from stigcode.ingest.xccdf import StigBenchmark
 from stigcode.mapping.engine import MappingDatabase
 
 

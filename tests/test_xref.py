@@ -11,7 +11,6 @@ import pytest
 from stigcode.ingest.xccdf import StigBenchmark, StigFinding
 from stigcode.mapping.engine import MappingDatabase, StigMapping
 from stigcode.output.xref import (
-    XrefEntry,
     build_xref_matrix,
     write_xref,
     xref_to_csv,
@@ -294,6 +293,7 @@ class TestXrefIntegration:
     @pytest.fixture(scope="class")
     def entries(self):
         import yaml
+
         from stigcode.ingest.xccdf import parse_xccdf
         from stigcode.mapping.engine import load_mapping_database
 

@@ -23,13 +23,13 @@ def lookup_cwe(
         numeric_id = int(raw)
     except ValueError:
         typer.echo(f"Error: '{cwe_id}' is not a valid CWE ID.", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     try:
         db = get_mapping_database()
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     matches = db.lookup_by_cwe(numeric_id)
     if not matches:
@@ -39,7 +39,7 @@ def lookup_cwe(
     typer.echo(f"CWE-{numeric_id} maps to {len(matches)} STIG finding(s):\n")
     for m in sorted(matches, key=lambda x: x.stig_id):
         typer.echo(f"  {m.stig_id}  ({m.check_id})")
-        typer.echo(f"    Severity:   (see XCCDF for CAT)")
+        typer.echo("    Severity:   (see XCCDF for CAT)")
         typer.echo(f"    Confidence: {m.confidence}")
         typer.echo(f"    NIST:       {m.nist_control}")
         if m.notes:
@@ -63,7 +63,7 @@ def lookup_stig(
         db = get_mapping_database()
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     matches = db.lookup_by_stig(normalized)
     if not matches:

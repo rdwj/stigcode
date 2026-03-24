@@ -10,8 +10,6 @@ from stigcode.mapping.engine import MappingDatabase, StigMapping
 from stigcode.mapping.status import (
     CklStatus,
     DeterminationConfidence,
-    FindingDetermination,
-    StatusReport,
     determine_status,
 )
 

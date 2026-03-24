@@ -11,14 +11,13 @@ from __future__ import annotations
 
 import csv
 import io
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from stigcode.ingest.xccdf import StigBenchmark, StigFinding
 from stigcode.mapping.engine import MappingDatabase
 from stigcode.mapping.status import CklStatus, FindingDetermination, StatusReport
-
 
 # CAT → remediation window in days
 _CAT_DAYS: dict[int, int] = {1: 30, 2: 90, 3: 180}

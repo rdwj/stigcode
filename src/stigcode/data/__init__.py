@@ -11,9 +11,8 @@ copy for human browsing but is *not* used at runtime.
 
 from __future__ import annotations
 
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-from typing import Optional
 
 import yaml
 
@@ -50,8 +49,8 @@ def get_data_dir() -> Path:
 _DEFAULT_MAPPING_FILENAME = "asd_stig_v6r3.yaml"
 
 
-@lru_cache(maxsize=None)
-def get_mapping_database(filename: Optional[str] = None) -> MappingDatabase:
+@cache
+def get_mapping_database(filename: str | None = None) -> MappingDatabase:
     """Load and cache the default CWE→STIG mapping database.
 
     Args:
@@ -72,7 +71,7 @@ def get_mapping_database(filename: Optional[str] = None) -> MappingDatabase:
 # CCI→NIST mappings
 # ---------------------------------------------------------------------------
 
-@lru_cache(maxsize=None)
+@cache
 def get_cci_mappings() -> dict[str, str]:
     """Load CCI→NIST 800-53 control mappings.
 

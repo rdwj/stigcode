@@ -15,7 +15,6 @@ from stigcode.mapping.status import (
     StatusReport,
 )
 from stigcode.output.ckl_update import (
-    UpdateResult,
     parse_existing_ckl,
     update_ckl,
 )

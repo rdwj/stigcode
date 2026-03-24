@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stigcode"
-version = "0.0.1"
+version = "0.1.0"
 description = "SARIF-to-compliance bridge. Transforms SAST scan results into DISA STIG checklists, ATO evidence artifacts, and compliance-native output."
 readme = "README.md"
 license = "Apache-2.0"
@@ -19,7 +19,7 @@ authors = [
     {name = "rdwj"}
 ]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -45,6 +45,7 @@ stigcode = "stigcode.cli:main"
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
+    "ruff>=0.4.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -55,3 +56,22 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "B",     # flake8-bugbear
+    "UP",    # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # typer.Option/Argument in defaults is the standard Typer pattern
+]

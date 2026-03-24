@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -17,13 +16,13 @@ def trend(
         ...,
         help="SARIF files or a single directory containing *.sarif files.",
     ),
-    output: Optional[Path] = typer.Option(
+    output: Path | None = typer.Option(
         None,
         "--output",
         "-o",
         help="Write output to this file instead of stdout.",
     ),
-    since: Optional[str] = typer.Option(
+    since: str | None = typer.Option(
         None,
         "--since",
         help="Only include scans on or after this date (YYYY-MM-DD).",
@@ -36,7 +35,7 @@ def trend(
     ),
 ) -> None:
     """Analyze finding trends across multiple SARIF scans (CA-7 evidence)."""
-    from stigcode.output.trend import load_scan_snapshots, analyze_trend, trend_to_markdown
+    from stigcode.output.trend import analyze_trend, load_scan_snapshots, trend_to_markdown
 
     # Resolve paths: directory glob or explicit file list
     resolved: list[Path] = []
@@ -48,11 +47,11 @@ def trend(
             resolved.append(p)
         else:
             typer.echo(f"Error: not found: {p}", err=True)
-            raise typer.Exit(code=2)
+            raise typer.Exit(code=2) from None
 
     if not resolved:
         typer.echo("Error: no SARIF files found.", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     # Apply --since date filter
     if since:
@@ -64,7 +63,7 @@ def trend(
             typer.echo(
                 f"Error: --since value '{since}' must be in YYYY-MM-DD format.", err=True
             )
-            raise typer.Exit(code=2)
+            raise typer.Exit(code=2) from None
 
         from stigcode.output.trend import _extract_scan_date
 
@@ -73,7 +72,7 @@ def trend(
             typer.echo(
                 f"No SARIF files found on or after {since}.", err=True
             )
-            raise typer.Exit(code=2)
+            raise typer.Exit(code=2) from None
 
     if len(resolved) < 2:
         typer.echo(

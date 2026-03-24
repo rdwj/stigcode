@@ -9,8 +9,8 @@ Uses fpdf2 (pure Python) — no system dependencies, works in air-gapped environ
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 from fpdf import FPDF
 

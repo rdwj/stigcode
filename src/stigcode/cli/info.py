@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 import yaml
@@ -14,11 +13,11 @@ from stigcode.cli.pipeline import _DEFAULT_CLASSIFICATIONS
 
 @info_app.command(name="mappings")
 def info_mappings(
-    output: Optional[Path] = typer.Option(
+    output: Path | None = typer.Option(
         None, "--output", "-o",
         help="Write full cross-reference matrix to this file.",
     ),
-    xccdf_file: Optional[Path] = typer.Option(
+    xccdf_file: Path | None = typer.Option(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML for full finding metadata.",
     ),
@@ -28,17 +27,17 @@ def info_mappings(
     ),
 ) -> None:
     """Show mapping database stats; optionally write the cross-reference matrix."""
-    from stigcode.data import get_mapping_database, get_cci_mappings
+    from stigcode.data import get_cci_mappings, get_mapping_database
 
     if fmt not in ("md", "csv"):
         typer.echo(f"Error: --format must be 'md' or 'csv', got {fmt!r}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     try:
         db = get_mapping_database()
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     total = len(db.mappings)
     unique_cwes = len(db.all_cwe_ids())
@@ -62,13 +61,13 @@ def info_mappings(
         return
 
     # Build full cross-reference matrix
-    from stigcode.ingest.xccdf import parse_xccdf, StigBenchmark, StigFinding
+    from stigcode.ingest.xccdf import StigBenchmark, StigFinding, parse_xccdf
     from stigcode.output.xref import build_xref_matrix, write_xref
 
     if xccdf_file is not None:
         if not xccdf_file.exists():
             typer.echo(f"Error: XCCDF file not found: {xccdf_file}", err=True)
-            raise typer.Exit(code=2)
+            raise typer.Exit(code=2) from None
         benchmark = parse_xccdf(xccdf_file)
     else:
         # Synthetic benchmark from mapping db + classifications
@@ -77,7 +76,7 @@ def info_mappings(
             typer.echo(
                 f"Error: classifications file not found: {cls_path}", err=True
             )
-            raise typer.Exit(code=2)
+            raise typer.Exit(code=2) from None
         raw_cls = yaml.safe_load(cls_path.read_text(encoding="utf-8"))
         classifications: dict = raw_cls.get("classifications", {})
 
@@ -116,7 +115,7 @@ def info_mappings(
         cci_mappings = get_cci_mappings()
     except FileNotFoundError as exc:
         typer.echo(f"Error: {exc}", err=True)
-        raise typer.Exit(code=2)
+        raise typer.Exit(code=2) from None
 
     entries = build_xref_matrix(benchmark, db, cci_mappings, classifications)
     write_xref(entries, output, fmt=fmt, benchmark_title=benchmark.title)

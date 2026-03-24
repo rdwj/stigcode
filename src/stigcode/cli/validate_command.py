@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import typer
 
-from stigcode.cli import app, REPO_URL
-from stigcode.ingest.validate import ValidationIssue, ValidationResult, validate_sarif
+from stigcode.cli import REPO_URL, app
+from stigcode.ingest.validate import ValidationResult, validate_sarif
 
 _GUIDE_URL = f"{REPO_URL}/blob/main/docs/sarif-integration-guide.md"
 

@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 import typer
 
-from stigcode.cli import app, DESCRIPTION, REPO_URL, ISSUES_URL
+from stigcode.cli import DESCRIPTION, ISSUES_URL, REPO_URL, app
 from stigcode.cli.pipeline import load_pipeline
 from stigcode.version import __version__
 
@@ -71,15 +70,15 @@ def assess(
     sarif_file: str = typer.Argument(
         ..., help="Path to SARIF file, or '-' to read from stdin."
     ),
-    xccdf_file: Optional[Path] = typer.Option(
+    xccdf_file: Path | None = typer.Option(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML file.",
     ),
-    mapping_file: Optional[Path] = typer.Option(
+    mapping_file: Path | None = typer.Option(
         None, "--mappings", "-m",
         help="Path to CWE-to-STIG mapping YAML.",
     ),
-    classifications_file: Optional[Path] = typer.Option(
+    classifications_file: Path | None = typer.Option(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),

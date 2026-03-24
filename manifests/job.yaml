@@ -30,7 +30,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: stigcode
-          image: quay.io/yourorg/stigcode:0.0.1
+          image: quay.io/yourorg/stigcode:0.1.0
           args:
             - report
             - /data/scan-results.sarif

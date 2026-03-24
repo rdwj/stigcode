@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from stigcode.ingest.sarif import NormalizedFinding
 from stigcode.ingest.xccdf import StigBenchmark, StigFinding
 from stigcode.mapping.engine import MappingDatabase, StigMapping
 from stigcode.mapping.status import (
@@ -409,7 +408,6 @@ def test_integration_real_pipeline():
     from stigcode.ingest.sarif import parse_sarif
     from stigcode.ingest.xccdf import parse_xccdf
     from stigcode.mapping.engine import load_mapping_database
-    from stigcode.mapping.status import determine_status
 
     mapping_path = FIXTURES_DIR / "mappings" / "test_mappings.yaml"
     db = load_mapping_database(mapping_path)

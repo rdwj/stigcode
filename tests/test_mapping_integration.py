@@ -7,7 +7,6 @@ the XCCDF source data and verify key CWE lookups work correctly.
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
-from pathlib import Path
 
 import pytest
 

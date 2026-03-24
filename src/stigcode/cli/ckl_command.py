@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -16,19 +15,19 @@ def ckl(
     sarif_file: str = typer.Argument(
         ..., help="Path to SARIF file, or '-' to read from stdin."
     ),
-    output: Optional[Path] = typer.Option(
+    output: Path | None = typer.Option(
         None, "--output", "-o",
         help="Output .ckl file path. Prints to stdout if omitted.",
     ),
-    xccdf_file: Optional[Path] = typer.Option(
+    xccdf_file: Path | None = typer.Option(
         None, "--xccdf", "-x",
         help="Path to DISA XCCDF XML file for full benchmark metadata.",
     ),
-    mapping_file: Optional[Path] = typer.Option(
+    mapping_file: Path | None = typer.Option(
         None, "--mappings", "-m",
         help="Path to CWE-to-STIG mapping YAML.",
     ),
-    classifications_file: Optional[Path] = typer.Option(
+    classifications_file: Path | None = typer.Option(
         None, "--classifications", "-c",
         help="Path to finding classifications YAML.",
     ),
@@ -42,13 +41,13 @@ def ckl(
         "UNCLASSIFIED", "--classification",
         help="Classification marking (e.g. UNCLASSIFIED, CUI).",
     ),
-    update_ckl_file: Optional[Path] = typer.Option(
+    update_ckl_file: Path | None = typer.Option(
         None, "--update", "-u",
         help="Path to an existing CKL to update incrementally (preserves assessor notes).",
     ),
 ) -> None:
     """Generate a STIG Viewer checklist (.ckl) from SARIF scan results."""
-    from stigcode.output.ckl import generate_ckl, write_ckl, AssetInfo
+    from stigcode.output.ckl import AssetInfo, generate_ckl, write_ckl
 
     rpt, benchmark, db, _sarif_result = load_pipeline(
         sarif_file, mapping_file, classifications_file, xccdf_file
