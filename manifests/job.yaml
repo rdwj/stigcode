@@ -1,0 +1,61 @@
+---
+# Run stigcode as a one-off Job against a SARIF file stored in a PVC.
+#
+# Usage:
+#   oc apply -f manifests/job.yaml -n <namespace>
+#
+# Customize the args array and the PVC name for your environment.
+# The SARIF file and all outputs are expected under /data on the PVC.
+#
+# To run with a ConfigMap instead of a PVC, replace the volume definition with:
+#
+#   volumes:
+#     - name: scan-data
+#       configMap:
+#         name: scan-results-configmap
+#
+# Note: ConfigMap mounts are read-only, so output must go to an emptyDir or PVC.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stigcode-scan
+  labels:
+    app: stigcode
+spec:
+  # Retain the completed pod for log inspection; clean up manually or via TTL.
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: stigcode
+          image: quay.io/yourorg/stigcode:0.0.1
+          args:
+            - report
+            - /data/scan-results.sarif
+            - --output
+            - /data/evidence.md
+            - --format
+            - md
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: scan-data
+              mountPath: /data
+      volumes:
+        - name: scan-data
+          persistentVolumeClaim:
+            claimName: scan-results-pvc

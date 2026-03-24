@@ -1,0 +1,60 @@
+---
+# Long-running stigcode deployment — useful for sidecar usage, interactive
+# exec sessions, or a future API mode.
+#
+# In the current CLI-only release this deployment keeps a pod alive so that
+# operators can exec in and run stigcode against files staged in the PVC
+# without re-scheduling a Job each time.
+#
+# Usage:
+#   oc apply -f manifests/deployment.yaml -n <namespace>
+#   oc exec -n <namespace> deploy/stigcode -- stigcode report /data/scan.sarif
+#
+# When stigcode gains an HTTP API mode, replace the sleep command with the
+# server entrypoint and add a Service / Route.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stigcode
+  labels:
+    app: stigcode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stigcode
+  template:
+    metadata:
+      labels:
+        app: stigcode
+    spec:
+      containers:
+        - name: stigcode
+          image: quay.io/yourorg/stigcode:0.0.1
+          # Keep the pod alive; replace with a server command when API mode lands.
+          command: ["sleep", "infinity"]
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: scan-data
+              mountPath: /data
+      volumes:
+        - name: scan-data
+          # Replace with a PVC for persistent storage across pod restarts:
+          #
+          #   persistentVolumeClaim:
+          #     claimName: stigcode-data-pvc
+          emptyDir: {}
