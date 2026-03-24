@@ -1,291 +1,287 @@
-# SAST-assessable classification for ASD STIG V6 findings
-# sast = detectable by static analysis
-# procedural = requires human review
-# Totals: 80 sast, 206 procedural out of 286 findings
 classifications:
-  V-69239:
+  V-222387:
     title: The application must provide a capability to limit the number of logon
       sessions per user.
     assessment_method: procedural
     rationale: 'Policy/process control: application must be ? configured|documented|reviewed|provid
       e|ing a ?capability'
-  V-69241:
+  V-222388:
     title: The application must clear temporary storage and cookies when the session
       is terminated.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cross.site script'
-  V-69243:
+  V-222389:
     title: The application must automatically terminate the non-privileged user session
       and log off non-privileged users after a 15 minute idle time period has elapsed.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69245:
+  V-222390:
     title: The application must automatically terminate the admin user session and
       log off admin users after a 10 minute idle time period is exceeded.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69247:
+  V-222391:
     title: Applications requiring user access authentication must provide a logoff
       capability for user initiated communication session.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69249:
+  V-222392:
     title: The application must display an explicit logoff message to users indicating
       the reliable termination of authenticated communications sessions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69251:
+  V-222393:
     title: The application must associate organization-defined types of security attributes
       having organization-defined security attribute values with information in storage.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69253:
+  V-222394:
     title: The application must associate organization-defined types of security attributes
       having organization-defined security attribute values with information in process.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69255:
+  V-222395:
     title: The application must associate organization-defined types of security attributes
       having organization-defined security attribute values with information in transmission.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69257:
+  V-222396:
     title: The application must implement DoD-approved encryption to protect the confidentiality
       of remote access sessions.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt'
-  V-69259:
+  V-222397:
     title: The application must implement cryptographic mechanisms to protect the
       integrity of remote access sessions.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-69261:
+  V-222398:
     title: Applications with SOAP messages requiring integrity must include the following
       message elements:-Message ID-Service Request-Timestamp-SAML Assertion (optionally
       included in messages) and all elements of the message must be digitally signed.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69279:
+  V-222399:
     title: Messages protected with WS_Security must use time stamps with creation
       and expiration times.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69281:
+  V-222400:
     title: Validity periods must be verified on all application messages using WS-Security
       or SAML assertions.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69283:
+  V-222401:
     title: The application must ensure each unique asserting party provides unique
       assertion ID references for each SAML assertion.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69285:
+  V-222402:
     title: The application must ensure encrypted assertions, or equivalent confidentiality
       protections are used when assertion data is passed through an intermediary,
       and confidentiality of the assertion data is required when passing through the
       intermediary.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt'
-  V-69287:
+  V-222403:
     title: The application must use the NotOnOrAfter condition when using the SubjectConfirmation
       element in a SAML assertion.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69289:
+  V-222404:
     title: The application must use both the NotBefore and NotOnOrAfter elements or
       OneTimeUse element when using the Conditions element in a SAML assertion.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69291:
+  V-222405:
     title: The application must ensure if a OneTimeUse element is used in an assertion,
       there is only one of the same used in the Conditions element portion of an assertion.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69293:
+  V-222406:
     title: The application must ensure messages are encrypted when the SessionIndex
       is tied to privacy data.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt'
-  V-69295:
+  V-222407:
     title: The application must provide automated mechanisms for supporting account
       management functions.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69297:
+  V-222408:
     title: Shared/group account credentials must be terminated when members leave
       the group.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69299:
+  V-222409:
     title: The application must automatically remove or disable temporary user accounts
       72 hours after account creation.
     assessment_method: procedural
     rationale: 'Policy/process control: access control polic, application must be
       ? configured|documented|reviewed|provid e|ing a ?capability'
-  V-70173:
+  V-222410:
     title: The application must have a process, feature or function that prevents
       removal or disabling of emergency accounts.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69301:
+  V-222411:
     title: The application must automatically disable accounts after a 35 day period
       of account inactivity.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69303:
+  V-222412:
     title: Unnecessary application accounts must be disabled, or deleted.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69305:
+  V-222413:
     title: The application must automatically audit account creation.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69307:
+  V-222414:
     title: The application must automatically audit account modification.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69309:
+  V-222415:
     title: The application must automatically audit account disabling actions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69311:
+  V-222416:
     title: The application must automatically audit account removal actions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69313:
+  V-222417:
     title: The application must notify system administrators (SAs) and information
       system security officers (ISSOs) when accounts are created.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69315:
+  V-222418:
     title: The application must notify system administrators (SAs) and information
       system security officers (ISSOs) when accounts are modified.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69317:
+  V-222419:
     title: The application must notify system administrators (SAs) and information
       system security officers (ISSOs) of account disabling actions.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69319:
+  V-222420:
     title: The application must notify system administrators (SAs) and information
       system security officers (ISSOs) of account removal actions.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69321:
+  V-222421:
     title: The application must automatically audit account enabling actions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69323:
+  V-222422:
     title: The application must notify system administrators (SAs) and information
       system security officers (ISSOs) of account enabling actions.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69325:
+  V-222423:
     title: Application data protection requirements must be identified and documented.
     assessment_method: procedural
     rationale: Title describes a process/audit requirement, not a code property
-  V-69327:
+  V-222424:
     title: The application must utilize organization-defined data mining detection
       techniques for organization-defined data storage objects to adequately detect
       data mining attempts.
     assessment_method: procedural
     rationale: 'Policy/process control: organization.defined'
-  V-69329:
+  V-222425:
     title: The application must enforce approved authorizations for logical access
       to information and system resources in accordance with applicable access control
       policies.
     assessment_method: procedural
     rationale: 'Scores: sast=2, procedural=3'
-  V-69331:
+  V-222426:
     title: The application must enforce organization-defined discretionary access
       control policies over defined subjects and objects.
     assessment_method: procedural
     rationale: 'Policy/process control: access control polic, organization.defined'
-  V-69333:
+  V-222427:
     title: The application must enforce approved authorizations for controlling the
       flow of information within the system based on organization-defined information
       flow control policies.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69335:
+  V-222428:
     title: The application must enforce approved authorizations for controlling the
       flow of information between interconnected systems based on organization-defined
       information flow control policies.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69337:
+  V-222429:
     title: The application must prevent non-privileged users from executing privileged
       functions to include disabling, circumventing, or altering implemented security
       safeguards/countermeasures.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69339:
+  V-222430:
     title: The application must execute without excessive account permissions.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69341:
+  V-222431:
     title: The application must audit the execution of privileged functions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69343:
+  V-222432:
     title: The application must enforce the limit of three consecutive invalid logon
       attempts by a user during a 15 minute time period.
     assessment_method: procedural
     rationale: 'Scores: sast=0, procedural=2'
-  V-69347:
+  V-222433:
     title: The application administrator must follow an approved process to unlock
       locked user accounts.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69349:
+  V-222434:
     title: The application must display the Standard Mandatory DoD Notice and Consent
       Banner before granting access to the application.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69351:
+  V-222435:
     title: The application must retain the Standard Mandatory DoD Notice and Consent
       Banner on the screen until users acknowledge the usage conditions and take explicit
       actions to log on for further access.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69353:
+  V-222436:
     title: The publicly accessible application must display the Standard Mandatory
       DoD Notice and Consent Banner before granting access to the application.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69355:
+  V-222437:
     title: The application must display the time and date of the users last successful
       logon.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69357:
+  V-222438:
     title: The application must protect against an individual (or process acting on
       behalf of an individual) falsely denying having performed organization-defined
       actions to be covered by non-repudiation.
     assessment_method: sast
     rationale: Ambiguous — leaning sast borderline inclusion policy
-  V-69359:
+  V-222439:
     title: For applications providing audit record aggregation, the application must
       compile audit records from organization-defined information system components
       into a system-wide audit trail that is time-correlated with an organization-defined
@@ -294,963 +290,963 @@ classifications:
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69363:
+  V-222441:
     title: The application must provide audit record generation capability for the
       creation of session IDs.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, saniti[sz]'
-  V-69365:
+  V-222442:
     title: The application must provide audit record generation capability for the
       destruction of session IDs.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69367:
+  V-222443:
     title: The application must provide audit record generation capability for the
       renewal of session IDs.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69369:
+  V-222444:
     title: The application must not write sensitive data into the application logs.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt'
-  V-69371:
+  V-222445:
     title: The application must provide audit record generation capability for session
       timeouts.
     assessment_method: procedural
     rationale: 'Policy/process control: audit log|trail|record|event review|retention|generat|collec|monit
       , session timeout'
-  V-69373:
+  V-222446:
     title: The application must record a time stamp indicating when the event occurred.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69375:
+  V-222447:
     title: The application must provide audit record generation capability for HTTP
       headers including User-Agent, Referer, GET, and POST.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69377:
+  V-222448:
     title: The application must provide audit record generation capability for connecting
       system IP addresses.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69379:
+  V-222449:
     title: The application must record the username or user ID of the user associated
       with the event.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69381:
+  V-222450:
     title: The application must generate audit records when successful/unsuccessful
       attempts to grant privileges occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69383:
+  V-222451:
     title: The application must generate audit records when successful/unsuccessful
       attempts to access security objects occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69385:
+  V-222452:
     title: The application must generate audit records when successful/unsuccessful
       attempts to access security levels occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69387:
+  V-222453:
     title: The application must generate audit records when successful/unsuccessful
       attempts to access categories of information (e.g., classification levels) occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69389:
+  V-222454:
     title: The application must generate audit records when successful/unsuccessful
       attempts to modify privileges occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69391:
+  V-222455:
     title: The application must generate audit records when successful/unsuccessful
       attempts to modify security objects occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69393:
+  V-222456:
     title: The application must generate audit records when successful/unsuccessful
       attempts to modify security levels occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69395:
+  V-222457:
     title: The application must generate audit records when successful/unsuccessful
       attempts to modify categories of information (e.g., classification levels) occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69397:
+  V-222458:
     title: The application must generate audit records when successful/unsuccessful
       attempts to delete privileges occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69399:
+  V-222459:
     title: The application must generate audit records when successful/unsuccessful
       attempts to delete security levels occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69401:
+  V-222460:
     title: The application must generate audit records when successful/unsuccessful
       attempts to delete application database security objects occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69403:
+  V-222461:
     title: The application must generate audit records when successful/unsuccessful
       attempts to delete categories of information (e.g., classification levels) occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69405:
+  V-222462:
     title: The application must generate audit records when successful/unsuccessful
       logon attempts occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69407:
+  V-222463:
     title: The application must generate audit records for privileged activities or
       other system-level access.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69409:
+  V-222464:
     title: The application must generate audit records showing starting and ending
       time for user access to the system.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69411:
+  V-222465:
     title: The application must generate audit records when successful/unsuccessful
       accesses to objects occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69413:
+  V-222466:
     title: The application must generate audit records for all direct access to the
       information system.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69415:
+  V-222467:
     title: The application must generate audit records for all account creations,
       modifications, disabling, and termination events.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69419:
+  V-222468:
     title: The application must initiate session auditing upon startup.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69421:
+  V-222469:
     title: The application must log application shutdown events.
     assessment_method: procedural
     rationale: 'Scores: sast=0, procedural=2'
-  V-69423:
+  V-222470:
     title: The application must log destination IP addresses.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69425:
+  V-222471:
     title: The application must log user actions involving access to data.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69427:
+  V-222472:
     title: The application must log user actions involving changes to data.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69429:
+  V-222473:
     title: The application must produce audit records containing information to establish
       when (date and time) the events occurred.
     assessment_method: procedural
     rationale: 'Scores: sast=0, procedural=2'
-  V-69431:
+  V-222474:
     title: The application must produce audit records containing enough information
       to establish which component, feature or function of the application triggered
       the audit event.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69433:
+  V-222475:
     title: When using centralized logging; the application must include a unique identifier
       in order to distinguish itself from other application logs.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69435:
+  V-222476:
     title: The application must produce audit records that contain information to
       establish the outcome of the events.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69437:
+  V-222477:
     title: The application must generate audit records containing information that
       establishes the identity of any individual or process associated with the event.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69439:
+  V-222478:
     title: The application must generate audit records containing the full-text recording
       of privileged commands or the individual identities of group account users.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69441:
+  V-222479:
     title: The application must implement transaction recovery logs when transaction
       based.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69443:
+  V-222480:
     title: The application must provide centralized management and configuration of
       the content to be captured in audit records generated by all application components.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69445:
+  V-222481:
     title: The application must off-load audit records onto a different system or
       media than the system being audited.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69447:
+  V-222482:
     title: The application must be configured to write application logs to a centralized
       log repository.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69449:
+  V-222483:
     title: The application must provide an immediate warning to the SA and ISSO (at
       a minimum) when allocated audit record storage volume reaches 75% of repository
       maximum audit record storage capacity.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69451:
+  V-222484:
     title: Applications categorized as having a moderate or high impact must provide
       an immediate real-time alert to the SA and ISSO (at a minimum) for all audit
       failure events.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69453:
+  V-222485:
     title: The application must alert the ISSO and SA (at a minimum) in the event
       of an audit processing failure.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69455:
+  V-222486:
     title: The application must shut down by default upon audit failure (unless availability
       is an overriding concern).
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69457:
+  V-222487:
     title: The application must provide the capability to centrally review and analyze
       audit records from multiple components within the system.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69459:
+  V-222488:
     title: The application must provide the capability to filter audit records for
       events of interest based upon organization-defined criteria.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69461:
+  V-222489:
     title: The application must provide an audit reduction capability that supports
       on-demand reporting requirements.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69463:
+  V-222490:
     title: The application must provide an audit reduction capability that supports
       on-demand audit review and analysis.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69465:
+  V-222491:
     title: The application must provide an audit reduction capability that supports
       after-the-fact investigations of security incidents.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69467:
+  V-222492:
     title: The application must provide a report generation capability that supports
       on-demand audit review and analysis.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69469:
+  V-222493:
     title: The application must provide a report generation capability that supports
       on-demand reporting requirements.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69471:
+  V-222494:
     title: The application must provide a report generation capability that supports
       after-the-fact investigations of security incidents.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69473:
+  V-222495:
     title: The application must provide an audit reduction capability that does not
       alter original content or time ordering of audit records.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69475:
+  V-222496:
     title: The application must provide a report generation capability that does not
       alter original content or time ordering of audit records.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69477:
+  V-222497:
     title: The applications must use internal system clocks to generate time stamps
       for audit records.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69479:
+  V-222498:
     title: The application must record time stamps for audit records that can be mapped
       to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69481:
+  V-222499:
     title: The application must record time stamps for audit records that meet a granularity
       of one second for a minimum degree of precision.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69483:
+  V-222500:
     title: The application must protect audit information from any type of unauthorized
       read access.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69485:
+  V-222501:
     title: The application must protect audit information from unauthorized modification.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69487:
+  V-222502:
     title: The application must protect audit information from unauthorized deletion.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69489:
+  V-222503:
     title: The application must protect audit tools from unauthorized access.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69491:
+  V-222504:
     title: The application must protect audit tools from unauthorized modification.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69493:
+  V-222505:
     title: The application must protect audit tools from unauthorized deletion.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69495:
+  V-222506:
     title: The application must back up audit records at least every seven days onto
       a different system or system component than the system or component being audited.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69497:
+  V-222507:
     title: The application must use cryptographic mechanisms to protect the integrity
       of audit information.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69499:
+  V-222508:
     title: Application audit tools must be cryptographically hashed.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: md5 , sha.?1 , cryptograph'
-  V-69501:
+  V-222509:
     title: The integrity of the audit tools must be validated by checking the files
       for changes in the cryptographic hash value.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69503:
+  V-222510:
     title: The application must prohibit user installation of software without explicit
       privileged status.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69505:
+  V-222511:
     title: The application must enforce access restrictions associated with changes
       to application configuration.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69507:
+  V-222512:
     title: The application must audit who makes configuration changes to the application.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69509:
+  V-222513:
     title: The application must have the capability to prevent the installation of
       patches, service packs, or application components without verification the software
       component has been digitally signed using a certificate that is recognized and
       approved by the organization.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69511:
+  V-222514:
     title: The applications must limit privileges to change the software resident
       within software libraries.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69513:
+  V-222515:
     title: An application vulnerability assessment must be conducted.
     assessment_method: procedural
     rationale: Title describes a process/audit requirement, not a code property
-  V-69515:
+  V-222516:
     title: The application must prevent program execution in accordance with organization-defined
       policies regarding software program usage and restrictions, and/or rules authorizing
       the terms and conditions of software program usage.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69517:
+  V-222517:
     title: The application must employ a deny-all, permit-by-exception (whitelist)
       policy to allow the execution of authorized software programs.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69519:
+  V-222518:
     title: The application must be configured to disable non-essential capabilities.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69521:
+  V-222519:
     title: The application must be configured to use only functions, ports, and protocols
       permitted to it in the PPSM CAL.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69523:
+  V-222520:
     title: The application must require users to reauthenticate when organization-defined
       circumstances or situations require reauthentication.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69525:
+  V-222521:
     title: The application must require devices to reauthenticate when organization-defined
       circumstances or situations requiring reauthentication.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-69527:
+  V-222522:
     title: The application must uniquely identify and authenticate organizational
       users (or processes acting on behalf of organizational users).
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69529:
+  V-222523:
     title: The application must use multifactor (Alt. Token) authentication for network
       access to privileged accounts.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69531:
+  V-222524:
     title: The application must accept Personal Identity Verification (PIV) credentials.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69533:
+  V-222525:
     title: The application must electronically verify Personal Identity Verification
       (PIV) credentials.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69535:
+  V-222526:
     title: The application must use multifactor (e.g., CAC, Alt. Token) authentication
       for network access to non-privileged accounts.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69537:
+  V-222527:
     title: The application must use multifactor (Alt. Token) authentication for local
       access to privileged accounts.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69539:
+  V-222528:
     title: The application must use multifactor (e.g., CAC, Alt. Token) authentication
       for local access to nonprivileged accounts.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-69541:
+  V-222529:
     title: The application must ensure users are authenticated with an individual
       authenticator prior to using a group authenticator.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69543:
+  V-222530:
     title: The application must implement replay-resistant authentication mechanisms
       for network access to privileged accounts.
     assessment_method: sast
     rationale: Ambiguous — leaning sast borderline inclusion policy
-  V-69545:
+  V-222531:
     title: The application must implement replay-resistant authentication mechanisms
       for network access to nonprivileged accounts.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: tls , pki'
-  V-69547:
+  V-222532:
     title: The application must utilize mutual authentication when endpoint device
       non-repudiation protections are required by DoD policy or by the data owner.
     assessment_method: procedural
     rationale: 'Scores: sast=2, procedural=3'
-  V-69549:
+  V-222533:
     title: The application must authenticate all network connected endpoint devices
       before establishing any connection.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69551:
+  V-222534:
     title: Service-Oriented Applications handling non-releasable data must authenticate
       endpoint devices via mutual SSL/TLS.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: tls , ssl'
-  V-69553:
+  V-222535:
     title: The application must disable device identifiers after 35 days of inactivity
       unless a cryptographic certificate is used for authentication.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph, pki'
-  V-69555:
+  V-222536:
     title: The application must enforce a minimum 15-character password length.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69557:
+  V-222537:
     title: The application must enforce password complexity by requiring that at least
       one uppercase character be used.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69559:
+  V-222538:
     title: The application must enforce password complexity by requiring that at least
       one lowercase character be used.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69561:
+  V-222539:
     title: The application must enforce password complexity by requiring that at least
       one numeric character be used.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69563:
+  V-222540:
     title: The application must enforce password complexity by requiring that at least
       one special character be used.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69565:
+  V-222541:
     title: The application must require the change of at least eight of the total
       number of characters when passwords are changed.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-69567:
+  V-222542:
     title: The application must only store cryptographic representations of passwords.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph, private
       key'
-  V-69569:
+  V-222543:
     title: The application must transmit only cryptographically-protected passwords.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-69571:
+  V-222544:
     title: The application must enforce 24 hours/1 day as the minimum password lifetime.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69573:
+  V-222545:
     title: The application must enforce a 60-day maximum password lifetime restriction.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69575:
+  V-222546:
     title: The application must prohibit password reuse for a minimum of five generations.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-69577:
+  V-222547:
     title: The application must allow the use of a temporary password for system logons
       with an immediate change to a permanent password.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-70145:
+  V-222548:
     title: The application password must not be changeable by users other than the
       administrator or the user with which the password is associated.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-70147:
+  V-222549:
     title: The application must terminate existing user sessions upon account deletion.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70149:
+  V-222550:
     title: The application, when utilizing PKI-based authentication, must validate
       certificates by constructing a certification path (which includes status information)
       to an accepted trust anchor.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: certificate validat|verif , pki'
-  V-70151:
+  V-222551:
     title: The application, when using PKI-based authentication, must enforce authorized
       access to the corresponding private key.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, pki , private key'
-  V-70153:
+  V-222552:
     title: The application must map the authenticated identity to the individual user
       or group account for PKI-based authentication.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: pki'
-  V-70155:
+  V-222553:
     title: The application, for PKI-based authentication, must implement a local cache
       of revocation data to support path discovery and validation in case of the inability
       to access revocation information via the network.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: pki'
-  V-70157:
+  V-222554:
     title: The application must not display passwords/PINs as clear text.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70159:
+  V-222555:
     title: The application must use mechanisms meeting the requirements of applicable
       federal laws, Executive Orders, directives, policies, regulations, standards,
       and guidance for authentication to a cryptographic module.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-70161:
+  V-222556:
     title: The application must uniquely identify and authenticate non-organizational
       users (or processes acting on behalf of non-organizational users).
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70163:
+  V-222557:
     title: The application must accept Personal Identity Verification (PIV) credentials
       from other federal agencies.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70165:
+  V-222558:
     title: The application must electronically verify Personal Identity Verification
       (PIV) credentials from other federal agencies.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70167:
+  V-222559:
     title: The application must accept Federal Identity, Credential, and Access Management
       (FICAM)-approved third-party credentials.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-70169:
+  V-222560:
     title: The application must conform to Federal Identity, Credential, and Access
       Management (FICAM)-issued profiles.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: pki'
-  V-70171:
+  V-222561:
     title: Applications used for non-local maintenance sessions must audit non-local
       maintenance and diagnostic sessions for organization-defined auditable events.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70175:
+  V-222562:
     title: Applications used for non-local maintenance sessions must implement cryptographic
       mechanisms to protect the integrity of non-local maintenance and diagnostic
       communications.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-70177:
+  V-222563:
     title: Applications used for non-local maintenance sessions must implement cryptographic
       mechanisms to protect the confidentiality of non-local maintenance and diagnostic
       communications.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-70179:
+  V-222564:
     title: Applications used for non-local maintenance sessions must verify remote
       disconnection at the termination of non-local maintenance and diagnostic sessions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70181:
+  V-222565:
     title: The application must employ strong authenticators in the establishment
       of non-local maintenance and diagnostic sessions.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: pki'
-  V-70183:
+  V-222566:
     title: The application must terminate all sessions and network connections when
       nonlocal maintenance is completed.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70185:
+  V-222567:
     title: The application must not be vulnerable to race conditions.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: validat e|ion input|data , race
       condition , time.of.check'
-  V-70187:
+  V-222568:
     title: The application must terminate all network connections associated with
       a communications session at the end of the session.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70191:
+  V-222570:
     title: The application must utilize FIPS-validated cryptographic modules when
       signing application components.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-70193:
+  V-222571:
     title: The application must utilize FIPS-validated cryptographic modules when
       generating cryptographic hashes.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-70195:
+  V-222572:
     title: The application must utilize FIPS-validated cryptographic modules when
       protecting unclassified information that requires cryptographic protection.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-70197:
+  V-222573:
     title: Applications making SAML assertions must use FIPS-approved random numbers
       in the generation of SessionIndex in the SAML element AuthnStatement.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-70199:
+  V-222574:
     title: The application user interface must be either physically or logically separated
       from data storage and management interfaces.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70201:
+  V-222575:
     title: The application must set the HTTPOnly flag on session cookies.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: xss , cross.site script'
-  V-70203:
+  V-222576:
     title: The application must set the secure flag on session cookies.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: tls , ssl'
-  V-70205:
+  V-222577:
     title: The application must not expose session IDs.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, tls , ssl'
-  V-70207:
+  V-222578:
     title: The application must destroy the session ID value and/or cookie on logoff
       or browser close.
     assessment_method: sast
     rationale: Title describes code-level vulnerability or crypto property
-  V-70209:
+  V-222579:
     title: Applications must use system-generated session identifiers that protect
       against session fixation.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: session fixation|hijack|token
       generat'
-  V-70211:
+  V-222580:
     title: Applications must validate session identifiers.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70213:
+  V-222581:
     title: Applications must not use URL embedded session IDs.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70215:
+  V-222582:
     title: The application must not re-use or recycle session IDs.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70217:
+  V-222583:
     title: The application must generate a unique session identifier using a FIPS
       140-2/140-3 approved random number generator.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: random number|seed|generat'
-  V-70219:
+  V-222584:
     title: The application must only allow the use of DoD-approved certificate authorities
       for verification of the establishment of protected sessions.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: tls , ssl , pki'
-  V-70221:
+  V-222585:
     title: The application must fail to a secure state if system initialization fails,
       shutdown fails, or aborts fail.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70223:
+  V-222586:
     title: In the event of a system failure, applications must preserve any information
       necessary to determine cause of failure and any information necessary to return
       to operations with least disruption to mission processes.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70225:
+  V-222587:
     title: The application must protect the confidentiality and integrity of stored
       information when required by DoD policy or the information owner.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph'
-  V-70227:
+  V-222588:
     title: The application must implement approved cryptographic mechanisms to prevent
       unauthorized modification of organization-defined information at rest on organization-defined
       information system components.
     assessment_method: sast
     rationale: Ambiguous — leaning sast borderline inclusion policy
-  V-70229:
+  V-222589:
     title: The application must use appropriate cryptography in order to protect stored
       DOD information when required by the information owner or DOD policy.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph'
-  V-70231:
+  V-222590:
     title: The application must isolate security functions from non-security functions.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70233:
+  V-222591:
     title: The application must maintain a separate execution domain for each executing
       process.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70235:
+  V-222592:
     title: Applications must prevent unauthorized and unintended information transfer
       via shared system resources.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt'
-  V-70237:
+  V-222593:
     title: XML-based applications must mitigate DoS attacks by using XML filters,
       parser options, or gateways.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70239:
+  V-222594:
     title: The application must restrict the ability to launch Denial of Service (DoS)
       attacks against itself or other information systems.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: memory alloc|management|safety|corruption'
-  V-70241:
+  V-222595:
     title: The web service design must include redundancy mechanisms when used with
       high-availability systems.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70245:
+  V-222596:
     title: The application must protect the confidentiality and integrity of transmitted
       information.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt, cryptograph, tls'
-  V-70247:
+  V-222597:
     title: The application must implement cryptographic mechanisms to prevent unauthorized
       disclosure of information and/or detect changes to information during transmission
       unless otherwise protected by alternative physical safeguards, such as, at a
       minimum, a Protected Distribution System (PDS).
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph, tls , ssl'
-  V-70249:
+  V-222598:
     title: The application must maintain the confidentiality and integrity of information
       during preparation for transmission.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph, tls , ssl'
-  V-70251:
+  V-222599:
     title: The application must maintain the confidentiality and integrity of information
       during reception.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cryptograph, tls , ssl'
-  V-70253:
+  V-222600:
     title: The application must not disclose unnecessary information to users.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70255:
+  V-222601:
     title: The application must not store sensitive information in hidden fields.
     assessment_method: sast
     rationale: Ambiguous — leaning sast borderline inclusion policy
-  V-70257:
+  V-222602:
     title: The application must protect from Cross-Site Scripting (XSS) vulnerabilities.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: xss , cross.site script, injection'
-  V-70259:
+  V-222603:
     title: The application must protect from Cross-Site Request Forgery (CSRF) vulnerabilities.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: xss , csrf , cross.site request'
-  V-70261:
+  V-222604:
     title: The application must protect from command injection.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: command injection , injection'
-  V-70263:
+  V-222605:
     title: The application must protect from canonical representation vulnerabilities.
     assessment_method: procedural
     rationale: 'Policy/process control: vulnerability scan'
-  V-70265:
+  V-222606:
     title: The application must validate all input.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: cross.site script, injection
       , input validat'
-  V-70267:
+  V-222607:
     title: The application must not be vulnerable to SQL Injection.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: sql injection , injection , escap
       e|ing'
-  V-70269:
+  V-222608:
     title: The application must not be vulnerable to XML-oriented attacks.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: xml injection , injection'
-  V-70271:
+  V-222609:
     title: The application must not be subject to input handling vulnerabilities.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: input validat, validat e|ion
       input|data'
-  V-70273:
+  V-222610:
     title: The application must generate error messages that provide information necessary
       for corrective actions without revealing information that could be exploited
       by adversaries.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70275:
+  V-222611:
     title: The application must reveal error messages only to the ISSO, ISSM, or SA.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70277:
+  V-222612:
     title: The application must not be vulnerable to overflow attacks.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: buffer overflow , format string'
-  V-70279:
+  V-222613:
     title: The application must remove organization-defined software components after
       updated versions have been installed.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70281:
+  V-222614:
     title: Security-relevant software updates and patches must be kept up to date.
     assessment_method: procedural
     rationale: 'Policy/process control: patch management|level|version , software
       maintenance|update|patch|version , incident response'
-  V-70283:
+  V-222615:
     title: The application performing organization-defined security functions must
       verify correct operation of security functions.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70285:
+  V-222616:
     title: 'The application must perform verification of the correct operation of
       security functions: upon system startup and/or restart; upon command by a user
       with privileged access; and/or every 30 days.'
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70287:
+  V-222617:
     title: The application must notify the ISSO and ISSM of failed security verification
       tests.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70289:
+  V-222618:
     title: Unsigned Category 1A mobile code must not be used in the application in
       accordance with DoD policy.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70291:
+  V-222619:
     title: The ISSO must ensure an account management process is implemented, verifying
       only authorized users can gain access to the application, and individual accounts
       designated as inactive, suspended, or terminated are promptly removed.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70293:
+  V-222620:
     title: Application web servers must be on a separate network segment from the
       application and database servers if it is a tiered application operating in
       the DoD DMZ.
     assessment_method: procedural
     rationale: 'Policy/process control: data owner , network architecture|topology|segment'
-  V-70295:
+  V-222621:
     title: The ISSO must ensure application audit trails are retained for at least
       1 year for applications without SAMI data, and 5 years for applications including
       SAMI data.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70297:
+  V-222622:
     title: The ISSO must review audit trails periodically based on system documentation
       recommendations or immediately upon system security events.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70301:
+  V-222623:
     title: The ISSO must report all suspected violations of IA policies in accordance
       with DoD information system IA procedures.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70303:
+  V-222624:
     title: The ISSO must ensure active vulnerability testing is performed.
     assessment_method: procedural
     rationale: Title describes a process/audit requirement, not a code property
-  V-70307:
+  V-222625:
     title: Execution flow diagrams and design documents must be created to show how
       deadlock and recursion issues in web services are being mitigated.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70309:
+  V-222626:
     title: The designer must ensure the application does not store configuration and
       control files in the same directory as user data.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70311:
+  V-222627:
     title: The ISSO must ensure if a DoD STIG or NSA guide is not available, a third-party
       product will be configured by following available guidance.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70313:
+  V-222628:
     title: New IP addresses, data services, and associated ports used by the application
       must be submitted to the appropriate approving authority for the organization,
       which in turn will be submitted through the DoD Ports, Protocols, and Services
@@ -1258,234 +1254,234 @@ classifications:
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70317:
+  V-222629:
     title: The application must be registered with the DoD Ports and Protocols Database.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70339:
+  V-222630:
     title: The Configuration Management (CM) repository must be properly patched and
       STIG compliant.
     assessment_method: procedural
     rationale: 'Policy/process control: configuration management'
-  V-70341:
+  V-222631:
     title: Access privileges to the Configuration Management (CM) repository must
       be reviewed every three months.
     assessment_method: procedural
     rationale: 'Policy/process control: configuration management'
-  V-70343:
+  V-222632:
     title: A Software Configuration Management (SCM) plan describing the configuration
       control and change management process of application objects developed by the
       organization and the roles and responsibilities of the organization must be
       created and maintained.
     assessment_method: procedural
     rationale: 'Policy/process control: change management , configuration management'
-  V-70345:
+  V-222633:
     title: A Configuration Control Board (CCB) that meets at least every release cycle,
       for managing the Configuration Management (CM) process must be established.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70347:
+  V-222634:
     title: The application services and interfaces must be compatible with and ready
       for IPv6 networks.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70349:
+  V-222635:
     title: The application must not be hosted on a general purpose machine if the
       application is designated as critical or high availability by the ISSO.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70351:
+  V-222636:
     title: A contingency plan must exist in accordance with DOD policy based on the
       application's availability requirements.
     assessment_method: procedural
     rationale: 'Policy/process control: document ation|ed ? procedure|process|polic
       , conting ency|encies plan'
-  V-70353:
+  V-222637:
     title: Recovery procedures and technical system features must exist so recovery
       is performed in a secure and verifiable manner. The ISSO will document circumstances
       inhibiting a trusted recovery.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70355:
+  V-222638:
     title: Data backup must be performed at required intervals in accordance with
       DoD policy.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70357:
+  V-222639:
     title: Back-up copies of the application software or source code must be stored
       in a fire-rated container or stored separately (offsite).
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70359:
+  V-222640:
     title: Procedures must be in place to assure the appropriate physical and technical
       protection of the backup and restoration of the application.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70361:
+  V-222641:
     title: The application must use encryption to implement key exchange and authenticate
       endpoints prior to establishing a communication channel for key exchange.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: encrypt'
-  V-70363:
+  V-222642:
     title: The application must not contain embedded authentication data.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70365:
+  V-222643:
     title: The application must have the capability to mark sensitive/classified output
       when required.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70367:
+  V-222644:
     title: Prior to each release of the application, updates to system, or applying
       patches; tests plans and procedures must be created and executed.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70369:
+  V-222645:
     title: Application files must be cryptographically hashed prior to deploying to
       DoD operational networks.
     assessment_method: sast
     rationale: 'Code-level vulnerability indicators: md5 , sha.?1 , cryptograph'
-  V-70371:
+  V-222646:
     title: At least one tester must be designated to test for security flaws in addition
       to functional testing.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70373:
+  V-222647:
     title: Test procedures must be created and at least annually executed to ensure
       system initialization, shutdown, and aborts are configured to verify the system
       remains in a secure state.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70375:
+  V-222648:
     title: An application code review must be performed on the application.
     assessment_method: procedural
     rationale: Title describes a process/audit requirement, not a code property
-  V-70377:
+  V-222649:
     title: Code coverage statistics must be maintained for each release of the application.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70379:
+  V-222650:
     title: Flaws found during a code review must be tracked in a defect tracking system.
     assessment_method: procedural
     rationale: 'Policy/process control: code review , configuration management'
-  V-70381:
+  V-222651:
     title: The changes to the application must be assessed for IA and accreditation
       impact prior to implementation.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70383:
+  V-222652:
     title: Security flaws must be fixed or addressed in the project plan.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70385:
+  V-222653:
     title: The application development team must follow a set of coding standards.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70387:
+  V-222654:
     title: The designer must create and update the Design Document for each release
       of the application.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70389:
+  V-222655:
     title: Threat models must be documented and reviewed for each application release
       and updated as required by design and functionality changes or when new threats
       are discovered.
     assessment_method: procedural
     rationale: 'Policy/process control: code review , configuration management'
-  V-70391:
+  V-222656:
     title: The application must not be subject to error handling vulnerabilities.
     assessment_method: procedural
     rationale: 'Scores: sast=2, procedural=3'
-  V-70393:
+  V-222657:
     title: The application development team must provide an application incident response
       plan.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70395:
+  V-222658:
     title: All products must be supported by the vendor or the development team.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70397:
+  V-222659:
     title: The application must be decommissioned when maintenance or support is no
       longer available.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70399:
+  V-222660:
     title: Procedures must be in place to notify users when an application is decommissioned.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70401:
+  V-222661:
     title: Unnecessary built-in application accounts must be disabled.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70403:
+  V-222662:
     title: Default passwords must be changed.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70405:
+  V-222663:
     title: An Application Configuration Guide must be created and included with the
       application.
     assessment_method: procedural
     rationale: Title describes a process/audit requirement, not a code property
-  V-70407:
+  V-222664:
     title: If the application contains classified data, a Security Classification
       Guide must exist containing data elements and their classification.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70409:
+  V-222665:
     title: The designer must ensure uncategorized or emerging mobile code is not used
       in applications.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70411:
+  V-222666:
     title: Production database exports must have database administration credentials
       and sensitive data removed before releasing the export.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70413:
+  V-222667:
     title: Protections against DoS attacks must be implemented.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70415:
+  V-222668:
     title: The system must alert an administrator when low resource conditions are
       encountered.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70417:
+  V-222669:
     title: At least one application administrator must be registered to receive update
       notifications, or security alerts, when automated alerts are available.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70419:
+  V-222670:
     title: The application must provide notifications or alerts when product update
       and security related patches are available.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70421:
+  V-222671:
     title: Connections between the DoD enclave and the Internet or other public or
       commercial wide area networks must require a DMZ.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70423:
+  V-222672:
     title: The application must generate audit records when concurrent logons from
       different workstations occur.
     assessment_method: procedural
     rationale: No SAST indicators found; defaulting to procedural
-  V-70425:
+  V-222673:
     title: The Program Manager must verify all levels of program management, designers,
       developers, and testers receive annual security training pertaining to their
       job function.
     assessment_method: procedural
     rationale: No SAST indicators in title/description; check requires documentation
       review
-  V-70189:
+  V-265634:
     title: The application must implement NSA-approved cryptography to protect classified
       information in accordance with applicable federal laws, Executive Orders, directives,
       policies, regulations, and standards.
