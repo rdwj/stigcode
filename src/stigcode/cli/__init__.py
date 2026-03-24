@@ -36,6 +36,7 @@ from stigcode.cli import lookup as _lookup  # noqa: F401, E402
 from stigcode.cli import info as _info  # noqa: F401, E402
 from stigcode.cli import stig as _stig  # noqa: F401, E402
 from stigcode.cli import trend as _trend  # noqa: F401, E402
+from stigcode.cli import validate_command as _validate_command  # noqa: F401, E402
 
 
 def main() -> None:
