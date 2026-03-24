@@ -36,12 +36,12 @@ class TestHelp:
         assert "SARIF-to-compliance bridge" in result.output
 
 
-class TestExportRequiresSarif:
-    @pytest.mark.parametrize("subcommand", ["ckl", "report"])
-    def test_export_requires_sarif_argument(self, subcommand):
-        """Implemented export commands require a SARIF file argument."""
-        result = runner.invoke(app, ["export", subcommand])
-        assert result.exit_code == 2, f"export {subcommand}: {result.output}"
+class TestTopLevelCommandsRequireSarif:
+    @pytest.mark.parametrize("subcommand", ["ckl", "report", "coverage", "poam"])
+    def test_command_requires_sarif_argument(self, subcommand):
+        """Top-level output commands require a SARIF file argument."""
+        result = runner.invoke(app, [subcommand])
+        assert result.exit_code == 2, f"{subcommand}: {result.output}"
 
 
 class TestStigImportXccdf:
@@ -169,38 +169,38 @@ class TestLookupStig:
 
 class TestInfoMappings:
     def test_exits_zero(self):
-        result = runner.invoke(app, ["stig", "mappings"])
+        result = runner.invoke(app, ["info", "mappings"])
         assert result.exit_code == 0, (
             f"Expected exit 0, got {result.exit_code}.\n{result.output}"
         )
 
     def test_shows_total_mappings(self):
-        result = runner.invoke(app, ["stig", "mappings"])
+        result = runner.invoke(app, ["info", "mappings"])
         assert "Total mappings" in result.output, (
             f"Expected total mappings count in output:\n{result.output}"
         )
 
     def test_shows_unique_cwes(self):
-        result = runner.invoke(app, ["stig", "mappings"])
+        result = runner.invoke(app, ["info", "mappings"])
         assert "Unique CWEs" in result.output, (
             f"Expected unique CWE count in output:\n{result.output}"
         )
 
     def test_shows_unique_stigs(self):
-        result = runner.invoke(app, ["stig", "mappings"])
+        result = runner.invoke(app, ["info", "mappings"])
         assert "Unique STIGs" in result.output, (
             f"Expected unique STIG count in output:\n{result.output}"
         )
 
     def test_shows_confidence_breakdown(self):
-        result = runner.invoke(app, ["stig", "mappings"])
+        result = runner.invoke(app, ["info", "mappings"])
         assert "direct" in result.output, (
             f"Expected confidence breakdown in output:\n{result.output}"
         )
 
     def test_output_markdown_file(self, tmp_path):
         out = tmp_path / "xref.md"
-        result = runner.invoke(app, ["stig", "mappings", "--output", str(out)])
+        result = runner.invoke(app, ["info", "mappings", "--output", str(out)])
         assert result.exit_code == 0, (
             f"Expected exit 0 with --output, got {result.exit_code}.\n{result.output}"
         )
@@ -213,7 +213,7 @@ class TestInfoMappings:
     def test_output_csv_file(self, tmp_path):
         out = tmp_path / "xref.csv"
         result = runner.invoke(app, [
-            "stig", "mappings", "--output", str(out), "--format", "csv",
+            "info", "mappings", "--output", str(out), "--format", "csv",
         ])
         assert result.exit_code == 0, (
             f"Expected exit 0 with --output --format csv, got {result.exit_code}.\n{result.output}"
@@ -223,7 +223,7 @@ class TestInfoMappings:
         assert "STIG_ID" in content
 
     def test_invalid_format_exits_2(self):
-        result = runner.invoke(app, ["stig", "mappings", "--format", "xlsx"])
+        result = runner.invoke(app, ["info", "mappings", "--format", "xlsx"])
         assert result.exit_code == 2, (
             f"Expected exit 2 for invalid format, got {result.exit_code}"
         )
