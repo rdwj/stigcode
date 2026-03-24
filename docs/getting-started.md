@@ -1,6 +1,7 @@
 # Getting Started
 
-> This is a placeholder for the full getting-started guide. Stigcode is in early development.
+Stigcode transforms SARIF scan results from any SAST scanner into compliance-ready artifacts:
+ATO evidence reports, NIST 800-53 coverage matrices, POA&M inputs, and STIG Viewer checklists.
 
 ## Installation
 
@@ -8,54 +9,109 @@
 pip install stigcode
 ```
 
-## Usage
+## Primary Workflow: ATO Evidence Package
 
-### From Sanicode
+The most common use case is preparing SA-11 evidence for an ATO security package. After running
+any SAST tool that produces SARIF output, run these three commands:
 
 ```bash
-sanicode scan ./myapp --format sarif -o results.sarif
-stigcode export ckl --input results.sarif --output checklist.ckl
+stigcode report scan.sarif -o sa-11-evidence.md
+stigcode coverage scan.sarif -o control-coverage.md
+stigcode poam scan.sarif -o poam-candidates.md
 ```
 
-### From Semgrep
+The report maps scan findings to NIST 800-53 controls and produces an assessor-ready summary.
+The coverage matrix shows which controls are addressed by the scan and which require other evidence.
+The POA&M candidates give the ISSO a starting point for documenting open findings.
+
+Both `coverage` and `poam` also support `--format csv` for spreadsheet workflows.
+
+## Scanner Examples
+
+### Sanicode
 
 ```bash
-semgrep --config auto --sarif -o results.sarif ./myapp
-stigcode export ckl --input results.sarif --output checklist.ckl
+sanicode scan ./myapp --format sarif -o scan.sarif
+stigcode report scan.sarif -o sa-11-evidence.md
 ```
 
-### From CodeQL
+### Semgrep
 
 ```bash
-codeql database analyze myapp-db --format=sarif-latest --output=results.sarif
-stigcode export ckl --input results.sarif --output checklist.ckl
+semgrep --config auto --sarif -o scan.sarif ./myapp
+stigcode report scan.sarif -o sa-11-evidence.md
+```
+
+### CodeQL
+
+```bash
+codeql database analyze myapp-db --format=sarif-latest --output=scan.sarif
+stigcode report scan.sarif -o sa-11-evidence.md
+```
+
+### Bandit
+
+```bash
+bandit -r ./myapp -f sarif -o scan.sarif
+stigcode report scan.sarif -o sa-11-evidence.md
 ```
 
 ### Pipeline Mode
 
 ```bash
-sanicode scan --format sarif ./myapp | stigcode export ckl -o checklist.ckl
+sanicode scan --format sarif ./myapp | stigcode report - -o sa-11-evidence.md
 ```
 
-### Multiple Output Formats
+## AppDev STIG Checklist
+
+For assessments that require a STIG Viewer checklist (.ckl), use the `ckl` command. Most
+findings that require human assessment will be marked Not Reviewed; scan-assessable findings
+are populated automatically.
 
 ```bash
-# Generate CKL for STIG Viewer import
-stigcode export ckl --input results.sarif --output checklist.ckl
-
-# Generate ATO evidence report
-stigcode export report --input results.sarif --output evidence.md
-
-# Generate NIST 800-53 coverage matrix
-stigcode export matrix --input results.sarif --output coverage.csv
+stigcode ckl scan.sarif -o app-stig.ckl
 ```
 
-### Inspect Available Data
+To update an existing checklist without losing assessor notes:
 
 ```bash
-# List loaded STIG baselines
-stigcode info stigs
+stigcode ckl scan.sarif --update existing.ckl -o updated.ckl
+```
 
-# Show CWE→STIG mapping statistics
+## Inspect Before Generating
+
+Verify a SARIF file parses correctly and review the finding summary before generating output:
+
+```bash
+stigcode import scan.sarif
+```
+
+Assess findings against the loaded STIG benchmark and see a status breakdown:
+
+```bash
+stigcode assess scan.sarif
+```
+
+## Reference Lookups
+
+```bash
+# Which STIG findings map to SQL injection?
+stigcode lookup cwe --cwe CWE-89
+
+# Which CWEs map to a specific STIG finding?
+stigcode lookup stig --stig V-222387
+
+# Show mapping database stats
 stigcode info mappings
 ```
+
+## Version
+
+```bash
+stigcode version
+```
+
+## Coming Soon
+
+Trend analysis (`stigcode trend`) and PDF output (`--format pdf`) are under active development.
+Track progress at https://github.com/rdwj/stigcode/issues.
