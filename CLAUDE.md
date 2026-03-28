@@ -28,6 +28,10 @@ The package uses setuptools with `src/` layout. Entry point: `stigcode.cli:main`
 
 Alpha release (v0.1.0). Core pipeline is functional: SARIF ingestion from any scanner, CWE→STIG mapping (126 mappings, 80 SAST-assessable findings), and six output formats (SA-11 evidence report, NIST 800-53 coverage matrix, POA&M candidates, CKL checklist, cross-reference matrix, trend analysis). Output available as Markdown, CSV, and PDF. 386 tests passing.
 
+## Agent Skill
+
+A Claude Code skill for using stigcode is bundled at `.claude/skills/stigcode-compliance/`. It covers workflow sequencing (validate → report → coverage → poam), file handling, CI/CD pipeline integration, and SARIF enrichment guidance. Reference files in the `references/` subdirectory provide pipeline examples (GitHub Actions, GitLab CI, Tekton, Jenkins) and a SARIF properties quick reference for scanner authors.
+
 # Stigcode — Project Context
 
 Stigcode is a PyPI-distributed CLI tool that transforms SARIF scan results from any SAST scanner into compliance-native artifacts: DISA STIG Viewer checklists (.ckl), ATO evidence reports, NIST 800-53 coverage matrices, and (future) NIST OSCAL output.
@@ -49,18 +53,19 @@ It is the compliance companion to [Sanicode](https://github.com/rdwj/sanicode). 
 ```
 stigcode/
 ├── src/stigcode/         # Main package
-│   ├── cli.py            # CLI entry point
+│   ├── cli/              # Typer CLI (modular command files)
 │   ├── ingest/           # SARIF parsing and normalization
 │   ├── mapping/          # CWE→STIG mapping engine
-│   ├── output/           # Output generators (ckl, report, coverage)
-│   └── data/             # Runtime data loading
-├── data/                 # Mapping databases and STIG metadata
+│   ├── output/           # Output generators (ckl, report, coverage, poam, trend, oscal, pdf)
+│   └── data/             # Runtime data loading and STIG profile registry
+├── data/                 # Reference copy of mapping databases (runtime uses src/stigcode/data/)
 │   ├── mappings/         # CWE→STIG YAML mappings
 │   ├── stigs/            # Parsed STIG data
 │   └── cci/              # CCI→NIST mappings
 ├── tests/                # pytest, mirrors src/stigcode/
 ├── docs/                 # Documentation
-└── stigcode.toml         # Project config (optional)
+├── manifests/            # OpenShift deployment manifests
+└── .claude/skills/       # Agent skills for stigcode usage
 ```
 
 ## Key Architectural Decisions
